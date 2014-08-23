@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Sounder.js</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <h1 style="margin-bottom: 4em">Sounder.js</h1>
+  <div id="output"></div>
+  <script src="sounder.js"></script>
+  <script src="coffee-script.js"></script>
+  <script type="text/coffeescript">
+    (() ->
+      # Sounder = window.Sounder
+      s = new Sounder()
+      # alert Sounder.getName()
+      s
+        .create document.getElementById "output"
+        #.anime()
+    )()
+  </script>
+
+</body>
+</html>
