@@ -6,10 +6,9 @@ module.exports = (grunt) ->
     copy:
       demo:
         expand: true
-        cwd: 'dest/'
+        cwd: 'min/'
         src: [
-          '*.js'
-          '!*.min.js'
+          '*.min.js'
           '!.DS_Store'
           '!*.js.map'
         ]
@@ -97,7 +96,7 @@ module.exports = (grunt) ->
     grunt.task.run 'bumpup:' + type
     return
 
-  grunt.registerTask 'd', 'Deploy.', (type) ->
+  grunt.registerTask 'b', 'Build.', (type) ->
     # type >> major minor patch
     grunt.task.run 'bumpup:' + type
     grunt.task.run 'copy'
