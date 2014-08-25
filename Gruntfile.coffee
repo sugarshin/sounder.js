@@ -6,9 +6,9 @@ module.exports = (grunt) ->
     copy:
       demo:
         expand: true
-        cwd: 'min/'
+        cwd: 'dest/'
         src: [
-          '*.min.js'
+          '*.js'
           '!.DS_Store'
           '!*.js.map'
         ]

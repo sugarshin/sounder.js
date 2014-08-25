@@ -61,9 +61,6 @@ sounder.js License MIT
       return
 
     styling = (_this) ->
-      _this.wrapper.style.overflow = 'hidden'
-      _this.wrapper.style.display = 'inline-block'
-      _this.wrapper.style.verticalAlign = 'bottom'
       _this.wrapper.style.height =
         _this.size[1] * 1.5 * _this.height + 'px'
       _this.wrapper.style.lineHeight =

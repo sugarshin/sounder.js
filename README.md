@@ -97,7 +97,7 @@ Live reload.
 * `watch`
 * `notify_hooks`
 
-##### `watch` taks
+##### `watch` tasks
 
 * `coffeelint`
 * `coffee`
