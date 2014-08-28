@@ -41,6 +41,7 @@
     <button id="start">start</button>
     <button id="stop">stop</button>
     <button id="reset">reset</button>
+    <button id="toggle">toggle</button>
   </div>
   <p class="copyright">
     <small>&copy; Tsumiki inc. &amp; github.com/sugarshin</small>
@@ -49,13 +50,14 @@
   <script src="coffee-script.js"></script>
   <script type="text/coffeescript">
     (() ->
-      s = new Sounder([16, 4], '#16a085', 8, 10, 50)
+      s = new Sounder([16, 4], '#c0392b', 8, 10, 50)
       s.create document.getElementById 'output'
       s.start()
 
       start = document.getElementById 'start'
       stop = document.getElementById 'stop'
       reset = document.getElementById 'reset'
+      toggle = document.getElementById 'toggle'
 
       start.addEventListener 'click', ->
         s.start()
@@ -67,6 +69,10 @@
 
       reset.addEventListener 'click', ->
         s.reset()
+        return
+
+      toggle.addEventListener 'click', ->
+        s.toggle()
         return
 
       return

@@ -16,7 +16,6 @@ sounder.js License MIT
 
 
 
-    # Private prop ----------
     this.name = 'Sounder'
 
     this.getName = ->
@@ -24,7 +23,30 @@ sounder.js License MIT
 
 
 
+    # Private prop ----------
+
+    tsumikiColor = [
+      '#23AAA4'
+      '#5AB5B0'
+      '#78BEB2'
+      '#686F89'
+      '#DC5D54'
+      '#DD6664'
+      '#D94142'
+      '#E78E21'
+      '#E9A21F'
+      '#EDB51C'
+    ]
+
+
+
     # Private method -------------------
+
+    shuffle = (array) ->
+      random = array.map Math.random
+      array.sort (a, b) ->
+        return random[a] - random[b]
+      return
 
     getChildNode = (el) ->
       children = []
@@ -45,10 +67,9 @@ sounder.js License MIT
         col = document.createElement('div')
         div = document.createElement('div')
         div.className = 'fragment'
-        div.style.width = _this.size[0] + 'px'
-        div.style.height = _this.size[1] + 'px'
-        div.style.margin = '0 1px ' + Math.floor((_this.size[1] / 2)) + 'px'
-        div.style.background = _this.color
+
+        # Styling piece
+        styling _this, div
 
         fragment.appendChild(div)
         col.className = 'col'
@@ -58,9 +79,6 @@ sounder.js License MIT
       _this.wrapper = wrapper if !_this.wrapper
       _this.fragment = getChildNode(wrapper)
 
-      return
-
-    styling = (_this) ->
       _this.wrapper.style.height =
         _this.size[1] * 1.5 * _this.height + 'px'
       _this.wrapper.style.lineHeight =
@@ -70,6 +88,16 @@ sounder.js License MIT
         _this.fragment[i].style.display = 'inline-block'
         _this.fragment[i].style.verticalAlign = 'bottom'
 
+      return
+
+    styling = (_this, target) ->
+      target.style.width = _this.size[0] + 'px'
+      target.style.height = _this.size[1] + 'px'
+      target.style.margin = '0 1px ' + Math.floor((_this.size[1] / 2)) + 'px'
+      if _this.color == 'tsumiki'
+        target.style.background = tsumikiColor[Math.floor(Math.random() * 10)]
+      else
+        target.style.background = _this.color
       return
 
     rendering = (_this, output) ->
@@ -83,10 +111,10 @@ sounder.js License MIT
       doAddCol = (target) ->
         div = document.createElement('div')
         div.className = 'fragment'
-        div.style.width = _this.size[0] + 'px'
-        div.style.height = _this.size[1] + 'px'
-        div.style.margin = '0 1px ' + Math.floor((_this.size[1] / 2)) + 'px'
-        div.style.background = _this.color
+
+        # Styling piece
+        styling _this, div
+
         target.appendChild(div)
         return
 
@@ -116,8 +144,6 @@ sounder.js License MIT
 
     create: (output) ->
       init(@)
-
-      styling(@)
 
       rendering(@, output)
 
@@ -159,11 +185,17 @@ sounder.js License MIT
       @isAnimation = false
       return
 
+    toggle: ->
+      if @isAnimation
+        @stop()
+      else
+        @start()
+      return
+
     reset: ->
       for i in [0..@fragment.length - 1]
         while(@fragment[i].childNodes[1])
           @fragment[i].removeChild(@fragment[i].firstChild);
-
       return
 
   exports.Sounder = exports.Sounder || Sounder

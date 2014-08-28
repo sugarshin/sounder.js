@@ -2,6 +2,8 @@
 
 Sound effector JavaScript library.
 
+v0.2.0
+
 ## Demo
 
 [https://tsumikiinc.github.io/sounder.js/demo/](https://tsumikiinc.github.io/sounder.js/demo/)
@@ -32,6 +34,8 @@ Type: *Array*
 **color**
 
 Color
+
+Support `'tsumiki'` coloring.
 
 Type: *String*
 
@@ -78,6 +82,10 @@ Animation start.
 ### `.stop()`
 
 Animation stop.
+
+### `.toggle()`
+
+Toggles the state between start and stop.
 
 ### `.reset()`
 
