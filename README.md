@@ -1,8 +1,8 @@
 # Sounder.js
 
-Sound effector JavaScript library.
+Sound effector small JavaScript library.
 
-v0.2.0
+v0.2.1
 
 ## Demo
 
@@ -11,25 +11,21 @@ v0.2.0
 ## Usage
 
 ```javascript
-var soundEffect = new Sounder(
-  [16, 4],
-  '#16a085',
-  8,
-  10,
-  50
-);
+var soundEffect = new Sounder();
 
 soundEffect.create(document.getElementById('output'));
 ```
 ### Parameter
 
-**`Sounder([size, color, row, height, speed]);`**
+**`Sounder([size, color, column, height, speed]);`**
 
 **size**
 
 Size
 
 Type: *Array*
+
+Default: *[20, 4]*
 
 **color**
 
@@ -39,17 +35,23 @@ Support `'tsumiki'` coloring.
 
 Type: *String*
 
-**row**
+Default: *'#16a085'*
 
-Effect row length
+**column**
+
+Effect column length
 
 Type: *Number*
+
+Default: *6*
 
 **height**
 
-Effect height length
+Effect max height length
 
 Type: *Number*
+
+Default: *10*
 
 **speed**
 
@@ -57,11 +59,13 @@ Effect speed
 
 Type: *Number*
 
+Default: *60*
+
 ## Methods
 
 ### `.create( element )`
 
-Rendering.
+Create and Rendering.
 
 **element**
 
@@ -71,7 +75,7 @@ Type: *Element*
 
 ### `.anime()`
 
-Effect animation.
+Animation.
 
 **Returns:** `this`
 

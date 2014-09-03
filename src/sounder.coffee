@@ -9,7 +9,7 @@ sounder.js License MIT
     constructor: (
       @size = [20, 4]
       @color = '#16a085'
-      @row = 6
+      @column = 6
       @height = 10
       @speed = 60
     ) ->
@@ -50,8 +50,8 @@ sounder.js License MIT
 
     getChildNode = (el) ->
       children = []
-      for i in [0..(el.children.length - 1)]
-        children.unshift el.children[i] if el.children[i].nodeType != 8
+      for i in el.children
+        children.unshift i if i.nodeType != 8
       return children
 
     init = (_this) ->
@@ -59,82 +59,83 @@ sounder.js License MIT
       _this.fragment = null if _this.fragment
 
       wrapper =
-        if _this.wrapper then _this.wrapper else document.createElement('div')
+        if _this.wrapper then _this.wrapper else document.createElement 'div'
 
       fragment = document.createDocumentFragment()
 
-      for i in [0.._this.row - 1]
-        col = document.createElement('div')
-        div = document.createElement('div')
+      for i in [0..._this.column]
+        col = document.createElement 'div'
+        div = document.createElement 'div'
         div.className = 'fragment'
 
         # Styling piece
         styling _this, div
 
-        fragment.appendChild(div)
+        fragment.appendChild div
         col.className = 'col'
-        col.appendChild(fragment)
-        wrapper.appendChild(col)
+        col.appendChild fragment
+        wrapper.appendChild col
 
       _this.wrapper = wrapper if !_this.wrapper
-      _this.fragment = getChildNode(wrapper)
+      _this.fragment = getChildNode wrapper
 
       _this.wrapper.style.height =
         _this.size[1] * 1.5 * _this.height + 'px'
       _this.wrapper.style.lineHeight =
         _this.size[1] * 1.5 * _this.height + 'px'
 
-      for i in [0..(_this.fragment.length - 1)]
-        _this.fragment[i].style.display = 'inline-block'
-        _this.fragment[i].style.verticalAlign = 'bottom'
+      for i in _this.fragment
+        i.style.display = 'inline-block'
+        i.style.verticalAlign = 'bottom'
 
       return
 
     styling = (_this, target) ->
-      target.style.width = _this.size[0] + 'px'
-      target.style.height = _this.size[1] + 'px'
-      target.style.margin = '0 1px ' + Math.floor((_this.size[1] / 2)) + 'px'
+      styles = target.style
+      styles.width = _this.size[0] + 'px'
+      styles.height = _this.size[1] + 'px'
+      styles.margin = '0 1px ' + Math.floor((_this.size[1] / 2)) + 'px'
       if _this.color == 'tsumiki'
-        target.style.background = tsumikiColor[Math.floor(Math.random() * 10)]
+        styles.background = tsumikiColor[Math.floor Math.random() * 10]
       else
-        target.style.background = _this.color
+        styles.background = _this.color
       return
 
     rendering = (_this, output) ->
-      output.appendChild(_this.wrapper)
+      output.appendChild _this.wrapper
 
       return
 
-    colAdjust = (_this) ->
+    fragmentAdjust = (_this) ->
       doAdjust = []
 
-      doAddCol = (target) ->
-        div = document.createElement('div')
+      doAddFragment = (target) ->
+        div = document.createElement 'div'
         div.className = 'fragment'
 
         # Styling piece
         styling _this, div
 
-        target.appendChild(div)
+        target.appendChild div
         return
 
-      doRemoveCol = (target) ->
+      doRemoveFragment = (target) ->
         child = getChildNode target
         child[0].parentNode.removeChild child[0]
         return
 
-      doAdjust[0] = doAddCol
-      doAdjust[1] = doRemoveCol
+      doAdjust[0] = doAddFragment
+      doAdjust[1] = doRemoveFragment
 
-      for i in [0..(_this.fragment.length - 1)]
-        currentLength = getChildNode(_this.fragment[i]).length
+      for i in _this.fragment
+        currentLength = getChildNode(i).length
 
         if currentLength == 1
-          doAddCol(_this.fragment[i])
+          doAddFragment i
         else if currentLength == _this.height
-          doRemoveCol(_this.fragment[i])
+          doRemoveFragment i
         else
-          doAdjust[Math.floor(Math.random() * 2)](_this.fragment[i])
+          doAdjust[Math.floor(Math.random() * 2)] i
 
       return
 
@@ -143,9 +144,9 @@ sounder.js License MIT
     # prototype ------------------------
 
     create: (output) ->
-      init(@)
+      init @
 
-      rendering(@, output)
+      rendering @, output
 
       return @
 
@@ -163,7 +164,7 @@ sounder.js License MIT
         delay = _this.speed
 
         loopAnime = ->
-          colAdjust _this
+          fragmentAdjust _this
 
           _this.animeTimer = setTimeout arguments.callee, delay
           return
@@ -193,9 +194,9 @@ sounder.js License MIT
       return
 
     reset: ->
-      for i in [0..@fragment.length - 1]
-        while(@fragment[i].childNodes[1])
-          @fragment[i].removeChild(@fragment[i].firstChild);
+      for i in @fragment
+        while(i.childNodes[1])
+          i.removeChild i.firstChild
       return
 
   exports.Sounder = exports.Sounder || Sounder
