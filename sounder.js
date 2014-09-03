@@ -5,12 +5,12 @@ sounder.js License MIT
 (function(exports) {
   var Sounder;
   Sounder = (function() {
-    var colAdjust, getChildNode, init, rendering, shuffle, styling, tsumikiColor;
+    var fragmentAdjust, getChildNode, init, rendering, shuffle, styling, tsumikiColor;
 
-    function Sounder(size, color, row, height, speed) {
+    function Sounder(size, color, column, height, speed) {
       this.size = size != null ? size : [20, 4];
       this.color = color != null ? color : '#16a085';
-      this.row = row != null ? row : 6;
+      this.column = column != null ? column : 6;
       this.height = height != null ? height : 10;
       this.speed = speed != null ? speed : 60;
     }
@@ -32,18 +32,20 @@ sounder.js License MIT
     };
 
     getChildNode = function(el) {
-      var children, i, _i, _ref;
+      var children, i, _i, _len, _ref;
       children = [];
-      for (i = _i = 0, _ref = el.children.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-        if (el.children[i].nodeType !== 8) {
-          children.unshift(el.children[i]);
+      _ref = el.children;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        i = _ref[_i];
+        if (i.nodeType !== 8) {
+          children.unshift(i);
         }
       }
       return children;
     };
 
     init = function(_this) {
-      var col, div, fragment, i, wrapper, _i, _j, _ref, _ref1;
+      var col, div, fragment, i, wrapper, _i, _j, _len, _ref, _ref1;
       if (_this.wrapper) {
         _this.wrapper = null;
       }
@@ -52,7 +54,7 @@ sounder.js License MIT
       }
       wrapper = _this.wrapper ? _this.wrapper : document.createElement('div');
       fragment = document.createDocumentFragment();
-      for (i = _i = 0, _ref = _this.row - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+      for (i = _i = 0, _ref = _this.column; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
         col = document.createElement('div');
         div = document.createElement('div');
         div.className = 'fragment';
@@ -68,20 +70,24 @@ sounder.js License MIT
       _this.fragment = getChildNode(wrapper);
       _this.wrapper.style.height = _this.size[1] * 1.5 * _this.height + 'px';
       _this.wrapper.style.lineHeight = _this.size[1] * 1.5 * _this.height + 'px';
-      for (i = _j = 0, _ref1 = _this.fragment.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-        _this.fragment[i].style.display = 'inline-block';
-        _this.fragment[i].style.verticalAlign = 'bottom';
+      _ref1 = _this.fragment;
+      for (_j = 0, _len = _ref1.length; _j < _len; _j++) {
+        i = _ref1[_j];
+        i.style.display = 'inline-block';
+        i.style.verticalAlign = 'bottom';
       }
     };
 
     styling = function(_this, target) {
-      target.style.width = _this.size[0] + 'px';
-      target.style.height = _this.size[1] + 'px';
-      target.style.margin = '0 1px ' + Math.floor(_this.size[1] / 2) + 'px';
+      var styles;
+      styles = target.style;
+      styles.width = _this.size[0] + 'px';
+      styles.height = _this.size[1] + 'px';
+      styles.margin = '0 1px ' + Math.floor(_this.size[1] / 2) + 'px';
       if (_this.color === 'tsumiki') {
-        target.style.background = tsumikiColor[Math.floor(Math.random() * 10)];
+        styles.background = tsumikiColor[Math.floor(Math.random() * 10)];
       } else {
-        target.style.background = _this.color;
+        styles.background = _this.color;
       }
     };
 
@@ -89,31 +95,33 @@ sounder.js License MIT
       output.appendChild(_this.wrapper);
     };
 
-    colAdjust = function(_this) {
-      var currentLength, doAddCol, doAdjust, doRemoveCol, i, _i, _ref;
+    fragmentAdjust = function(_this) {
+      var currentLength, doAddFragment, doAdjust, doRemoveFragment, i, _i, _len, _ref;
       doAdjust = [];
-      doAddCol = function(target) {
+      doAddFragment = function(target) {
         var div;
         div = document.createElement('div');
         div.className = 'fragment';
         styling(_this, div);
         target.appendChild(div);
       };
-      doRemoveCol = function(target) {
+      doRemoveFragment = function(target) {
         var child;
         child = getChildNode(target);
         child[0].parentNode.removeChild(child[0]);
       };
-      doAdjust[0] = doAddCol;
-      doAdjust[1] = doRemoveCol;
-      for (i = _i = 0, _ref = _this.fragment.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-        currentLength = getChildNode(_this.fragment[i]).length;
+      doAdjust[0] = doAddFragment;
+      doAdjust[1] = doRemoveFragment;
+      _ref = _this.fragment;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        i = _ref[_i];
+        currentLength = getChildNode(i).length;
         if (currentLength === 1) {
-          doAddCol(_this.fragment[i]);
+          doAddFragment(i);
         } else if (currentLength === _this.height) {
-          doRemoveCol(_this.fragment[i]);
+          doRemoveFragment(i);
         } else {
-          doAdjust[Math.floor(Math.random() * 2)](_this.fragment[i]);
+          doAdjust[Math.floor(Math.random() * 2)](i);
         }
       }
     };
@@ -132,7 +140,7 @@ sounder.js License MIT
         var delay, loopAnime;
         delay = _this.speed;
         loopAnime = function() {
-          colAdjust(_this);
+          fragmentAdjust(_this);
           _this.animeTimer = setTimeout(arguments.callee, delay);
         };
         setTimeout(loopAnime, delay);
@@ -161,10 +169,12 @@ sounder.js License MIT
     };
 
     Sounder.prototype.reset = function() {
-      var i, _i, _ref;
-      for (i = _i = 0, _ref = this.fragment.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-        while (this.fragment[i].childNodes[1]) {
-          this.fragment[i].removeChild(this.fragment[i].firstChild);
+      var i, _i, _len, _ref;
+      _ref = this.fragment;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        i = _ref[_i];
+        while (i.childNodes[1]) {
+          i.removeChild(i.firstChild);
         }
       }
     };
