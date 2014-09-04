@@ -8,6 +8,12 @@ v0.2.1
 
 [https://tsumikiinc.github.io/sounder.js/demo/](https://tsumikiinc.github.io/sounder.js/demo/)
 
+## Quickstart
+
+```shell
+bower install sounder.js
+```
+
 ## Usage
 
 ```javascript

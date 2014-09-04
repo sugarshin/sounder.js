@@ -77,6 +77,7 @@ module.exports = (grunt) ->
     bumpup:
       files: [
         'package.json'
+        'bower.json'
       ]
 
   for t of pkg.devDependencies

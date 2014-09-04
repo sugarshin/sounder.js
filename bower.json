@@ -1,0 +1,15 @@
+{
+  "name": "sounder.js",
+  "version": "0.2.1",
+  "homepage": "https://github.com/tsumikiinc/sounder.js",
+  "authors": [
+    "sato <sato@tsumikiinc.com>"
+  ],
+  "description": "Sound effector small Javacript library",
+  "main": "dest/sounder.js",
+  "license": "MIT",
+  "ignore": [
+    "node_modules",
+    "demo"
+  ]
+}

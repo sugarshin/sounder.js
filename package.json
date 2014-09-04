@@ -1,7 +1,7 @@
 {
   "name": "sounder.js",
   "version": "0.2.1",
-  "description": "Sound effector Javacript library",
+  "description": "Sound effector small Javacript library",
   "repository": "git@github.com:tsumikiinc/sounder.js.git",
   "author": "sato",
   "license": "MIT",
