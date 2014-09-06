@@ -141,7 +141,7 @@ sounder.js License MIT
         delay = _this.speed;
         loopAnime = function() {
           fragmentAdjust(_this);
-          _this.animeTimer = setTimeout(arguments.callee, delay);
+          _this.animeTimer = setTimeout(loopAnime, delay);
         };
         setTimeout(loopAnime, delay);
       })();
@@ -184,5 +184,3 @@ sounder.js License MIT
   })();
   exports.Sounder = exports.Sounder || Sounder;
 })(this);
-
-//# sourceMappingURL=sounder.js.map

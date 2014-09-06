@@ -160,13 +160,13 @@ sounder.js License MIT
       _this = @
       @isAnimation = true
 
-      (()->
+      (() ->
         delay = _this.speed
 
         loopAnime = ->
           fragmentAdjust _this
 
-          _this.animeTimer = setTimeout arguments.callee, delay
+          _this.animeTimer = setTimeout loopAnime, delay
           return
 
         setTimeout loopAnime, delay
