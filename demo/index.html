@@ -48,41 +48,39 @@
   <p class="copyright">
     <small>&copy; Tsumiki inc. &amp; github.com/sugarshin</small>
   </p>
+
   <script src="sounder.js"></script>
-  <script src="coffee-script.js"></script>
-  <script type="text/coffeescript">
-    (() ->
-      s = new Sounder([16, 4], 'tsumiki', 11, 10)#'#16a085'
+  <script>
+    (function () {
+      var s = new Sounder([16, 4], 'tsumiki', 11, 10),
+          output = document.getElementById('output');
 
-      output = document.getElementById 'output'
-
-      s.create output,
+      s.create(output, {
         autoPlay: true
+      });
 
-      start = document.getElementById 'start'
-      stop = document.getElementById 'stop'
-      reset = document.getElementById 'reset'
-      toggle = document.getElementById 'toggle'
+      var start = document.getElementById('start'),
+          stop = document.getElementById('stop'),
+          reset = document.getElementById('reset'),
+          toggle = document.getElementById('toggle');
 
-      start.addEventListener 'click', ->
+      start.addEventListener('click', function() {
         s.start()
-        return
+      });
 
-      stop.addEventListener 'click', ->
+      stop.addEventListener('click', function() {
         s.stop()
-        return
+      });
 
-      reset.addEventListener 'click', ->
+      reset.addEventListener('click', function() {
         s.reset()
-        return
+      });
 
-      toggle.addEventListener 'click', ->
+      toggle.addEventListener('click', function() {
         s.toggle()
-        return
+      });
 
-      return
-    )()
+    })();
   </script>
-
 </body>
 </html>
