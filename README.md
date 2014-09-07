@@ -2,7 +2,7 @@
 
 Sound effector small JavaScript library.
 
-v0.2.1
+v0.3.0
 
 ## Demo
 
@@ -17,17 +17,19 @@ bower install sounder.js
 ## Usage
 
 ```javascript
-var soundEffect = new Sounder();
+var sounder = new Sounder(),
+    output = document.getElementById('output');
 
-soundEffect.create(document.getElementById('output'));
+sounder.create(output);
 ```
+
 ### Parameter
 
-**`Sounder([size, color, column, height, speed]);`**
+**`Sounder([size, color, column, maxHeight]);`**
 
 **size**
 
-Size
+Piece size
 
 Type: *Array*
 
@@ -35,13 +37,13 @@ Default: *[20, 4]*
 
 **color**
 
-Color
+Coloring
 
 Support `'tsumiki'` coloring.
 
 Type: *String*
 
-Default: *'#16a085'*
+Default: *'#e74c3c'*
 
 **column**
 
@@ -51,7 +53,7 @@ Type: *Number*
 
 Default: *6*
 
-**height**
+**maxHeight**
 
 Effect max height length
 
@@ -59,29 +61,28 @@ Type: *Number*
 
 Default: *10*
 
-**speed**
-
-Effect speed
-
-Type: *Number*
-
-Default: *60*
-
 ## Methods
 
-### `.create( element )`
+### `.create( element [, animationOption ] )`
 
-Create and Rendering.
+Create and animation setting.
 
 **element**
 
 Type: *Element*
 
-**Returns:** `this`
+**animationOption**
 
-### `.anime()`
+Type: *Object*
 
-Animation.
+Default:
+
+```javascript
+{
+  autoPlay: false,
+  speed: 50
+}
+```
 
 **Returns:** `this`
 
@@ -101,9 +102,13 @@ Toggles the state between start and stop.
 
 Effector reset.
 
-## Build
+## Contributing
 
-Use Grunt
+Using Grunt
+
+```shell
+npm i
+```
 
 ### `grunt l`
 

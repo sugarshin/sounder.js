@@ -5,14 +5,13 @@ sounder.js License MIT
 (function(exports) {
   var Sounder;
   Sounder = (function() {
-    var fragmentAdjust, getChildNode, init, rendering, shuffle, styling, tsumikiColor;
+    var animation, animeInit, fragmentAdjust, getChildNode, init, rendering, shuffle, styling, tsumikiColor;
 
-    function Sounder(size, color, column, height, speed) {
+    function Sounder(size, color, column, maxHeight) {
       this.size = size != null ? size : [20, 4];
-      this.color = color != null ? color : '#16a085';
+      this.color = color != null ? color : '#e74c3c';
       this.column = column != null ? column : 6;
-      this.height = height != null ? height : 10;
-      this.speed = speed != null ? speed : 60;
+      this.maxHeight = maxHeight != null ? maxHeight : 10;
     }
 
     Sounder.name = 'Sounder';
@@ -38,7 +37,7 @@ sounder.js License MIT
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         i = _ref[_i];
         if (i.nodeType !== 8) {
-          children.unshift(i);
+          children.push(i);
         }
       }
       return children;
@@ -68,14 +67,34 @@ sounder.js License MIT
         _this.wrapper = wrapper;
       }
       _this.fragment = getChildNode(wrapper);
-      _this.wrapper.style.height = _this.size[1] * 1.5 * _this.height + 'px';
-      _this.wrapper.style.lineHeight = _this.size[1] * 1.5 * _this.height + 'px';
+      _this.wrapper.style.height = _this.size[1] * 1.5 * _this.maxHeight + 'px';
+      _this.wrapper.style.lineHeight = _this.size[1] * 1.5 * _this.maxHeight + 'px';
       _ref1 = _this.fragment;
       for (_j = 0, _len = _ref1.length; _j < _len; _j++) {
         i = _ref1[_j];
         i.style.display = 'inline-block';
         i.style.verticalAlign = 'bottom';
       }
+    };
+
+    animeInit = function(_this, opt) {
+      _this.speed = opt && opt.speed || 50;
+      if (opt && opt.autoPlay === true) {
+        animation(_this);
+      }
+    };
+
+    animation = function(_this) {
+      _this.isAnimation = true;
+      (function() {
+        var delay, loopAnime;
+        delay = _this.speed;
+        loopAnime = function() {
+          fragmentAdjust(_this);
+          _this.animeTimer = setTimeout(loopAnime, delay);
+        };
+        setTimeout(loopAnime, delay);
+      })();
     };
 
     styling = function(_this, target) {
@@ -103,7 +122,7 @@ sounder.js License MIT
         div = document.createElement('div');
         div.className = 'fragment';
         styling(_this, div);
-        target.appendChild(div);
+        target.insertBefore(div, target.firstChild);
       };
       doRemoveFragment = function(target) {
         var child;
@@ -118,7 +137,7 @@ sounder.js License MIT
         currentLength = getChildNode(i).length;
         if (currentLength === 1) {
           doAddFragment(i);
-        } else if (currentLength === _this.height) {
+        } else if (currentLength === _this.maxHeight) {
           doRemoveFragment(i);
         } else {
           doAdjust[Math.floor(Math.random() * 2)](i);
@@ -126,31 +145,22 @@ sounder.js License MIT
       }
     };
 
-    Sounder.prototype.create = function(output) {
+    Sounder.prototype.create = function(output, animeOpt) {
       init(this);
       rendering(this, output);
-      return this;
-    };
 
-    Sounder.prototype.anime = function() {
-      var _this;
-      _this = this;
-      this.isAnimation = true;
-      (function() {
-        var delay, loopAnime;
-        delay = _this.speed;
-        loopAnime = function() {
-          fragmentAdjust(_this);
-          _this.animeTimer = setTimeout(loopAnime, delay);
-        };
-        setTimeout(loopAnime, delay);
-      })();
+      /*
+      animeOpt
+        autoPlay
+        speed
+       */
+      animeInit(this, animeOpt);
       return this;
     };
 
     Sounder.prototype.start = function() {
       if (!this.isAnimation) {
-        this.anime();
+        animation(this);
       }
     };
 

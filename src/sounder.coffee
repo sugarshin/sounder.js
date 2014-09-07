@@ -7,14 +7,16 @@ sounder.js License MIT
   class Sounder
 
     constructor: (
+      # Default prop -------------------
       @size = [20, 4]
-      @color = '#16a085'
+      @color = '#e74c3c'
       @column = 6
-      @height = 10
-      @speed = 60
+      @maxHeight = 10
     ) ->
 
 
+
+    # Static prop, method --------------
 
     this.name = 'Sounder'
 
@@ -23,7 +25,7 @@ sounder.js License MIT
 
 
 
-    # Private prop ----------
+    # Private prop ---------------------
 
     tsumikiColor = [
       '#23AAA4'
@@ -51,7 +53,7 @@ sounder.js License MIT
     getChildNode = (el) ->
       children = []
       for i in el.children
-        children.unshift i if i.nodeType != 8
+        children.push i if i.nodeType != 8
       return children
 
     init = (_this) ->
@@ -80,13 +82,41 @@ sounder.js License MIT
       _this.fragment = getChildNode wrapper
 
       _this.wrapper.style.height =
-        _this.size[1] * 1.5 * _this.height + 'px'
+        _this.size[1] * 1.5 * _this.maxHeight + 'px'
       _this.wrapper.style.lineHeight =
-        _this.size[1] * 1.5 * _this.height + 'px'
+        _this.size[1] * 1.5 * _this.maxHeight + 'px'
 
       for i in _this.fragment
         i.style.display = 'inline-block'
         i.style.verticalAlign = 'bottom'
+
+      return
+
+    animeInit = (_this, opt) ->
+      _this.speed = opt && opt.speed || 50
+
+      if opt && opt.autoPlay is true
+        animation _this
+
+      return
+
+    animation = (_this) ->
+
+      _this.isAnimation = true
+
+      (() ->
+        delay = _this.speed
+
+        loopAnime = ->
+          fragmentAdjust _this
+
+          _this.animeTimer = setTimeout loopAnime, delay
+          return
+
+        setTimeout loopAnime, delay
+
+        return
+      )()
 
       return
 
@@ -116,7 +146,7 @@ sounder.js License MIT
         # Styling piece
         styling _this, div
 
-        target.appendChild div
+        target.insertBefore div, target.firstChild
         return
 
       doRemoveFragment = (target) ->
@@ -132,7 +162,7 @@ sounder.js License MIT
 
         if currentLength == 1
           doAddFragment i
-        else if currentLength == _this.height
+        else if currentLength == _this.maxHeight
           doRemoveFragment i
         else
           doAdjust[Math.floor(Math.random() * 2)] i
@@ -143,41 +173,22 @@ sounder.js License MIT
 
     # prototype ------------------------
 
-    create: (output) ->
+    create: (output, animeOpt) ->
       init @
 
       rendering @, output
 
-      return @
-
-    # remove: (el) ->
-    #   while el.firstChild
-    #     el.removeChild el.firstChild
-
-    #   return @
-
-    anime: ->
-      _this = @
-      @isAnimation = true
-
-      (() ->
-        delay = _this.speed
-
-        loopAnime = ->
-          fragmentAdjust _this
-
-          _this.animeTimer = setTimeout loopAnime, delay
-          return
-
-        setTimeout loopAnime, delay
-
-        return
-      )()
+      ###
+      animeOpt
+        autoPlay
+        speed
+      ###
+      animeInit @, animeOpt
 
       return @
 
     start: ->
-      @anime() if !@isAnimation
+      animation @ if !@isAnimation
       return
 
     stop: ->

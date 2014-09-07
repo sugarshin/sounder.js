@@ -36,6 +36,7 @@
 </head>
 <body>
   <h1>Sounder.js</h1>
+
   <div id="output"></div>
   <div class="control">
     <button id="start">start</button>
@@ -43,6 +44,7 @@
     <button id="reset">reset</button>
     <button id="toggle">toggle</button>
   </div>
+
   <p class="copyright">
     <small>&copy; Tsumiki inc. &amp; github.com/sugarshin</small>
   </p>
@@ -50,9 +52,12 @@
   <script src="coffee-script.js"></script>
   <script type="text/coffeescript">
     (() ->
-      s = new Sounder([16, 4], '#c0392b', 11, 10, 50)#'tsumiki'
-      s.create document.getElementById 'output'
-      s.start()
+      s = new Sounder([16, 4], 'tsumiki', 11, 10)#'#16a085'
+
+      output = document.getElementById 'output'
+
+      s.create output,
+        autoPlay: true
 
       start = document.getElementById 'start'
       stop = document.getElementById 'stop'
