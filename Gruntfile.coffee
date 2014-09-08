@@ -16,7 +16,7 @@ module.exports = (grunt) ->
 
     coffee:
       options:
-        # sourceMap: true
+        sourceMap: false
         bare: true
       compile:
         expand: true
@@ -43,8 +43,9 @@ module.exports = (grunt) ->
         cwd: 'dest/'
         src: [
           '*.js'
+          '!*.min.js'
         ]
-        dest: 'min/'
+        dest: 'dest/'
         ext: '.min.js'
 
     notify_hooks:
@@ -64,7 +65,6 @@ module.exports = (grunt) ->
         tasks: [
           'coffeelint:lint'
           'coffee:compile'
-          'copy:demo'
         ]
 
     connect:
@@ -72,7 +72,7 @@ module.exports = (grunt) ->
         port: 9003
       live:
         options:
-          base: './demo/'
+          base: './'
 
     bumpup:
       files: [
@@ -100,7 +100,6 @@ module.exports = (grunt) ->
   grunt.registerTask 'b', 'Build.', (type) ->
     # type >> major minor patch
     grunt.task.run 'bumpup:' + type
-    grunt.task.run 'copy'
     grunt.task.run 'coffeelint'
     grunt.task.run 'coffee'
     grunt.task.run 'uglify'

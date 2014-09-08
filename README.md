@@ -2,7 +2,7 @@
 
 Sound effector small JavaScript library.
 
-v0.3.0
+v0.4.0
 
 ## Demo
 
@@ -25,9 +25,9 @@ sounder.create(output);
 
 ### Parameter
 
-**`Sounder([size, color, column, maxHeight]);`**
+**`Sounder([ option ]);`**
 
-**size**
+#### option.size
 
 Piece size
 
@@ -35,7 +35,7 @@ Type: *Array*
 
 Default: *[20, 4]*
 
-**color**
+#### option.color
 
 Coloring
 
@@ -45,7 +45,7 @@ Type: *String*
 
 Default: *'#e74c3c'*
 
-**column**
+#### option.column
 
 Effect column length
 
@@ -53,7 +53,7 @@ Type: *Number*
 
 Default: *6*
 
-**maxHeight**
+#### option.maxHeight
 
 Effect max height length
 
@@ -63,15 +63,15 @@ Default: *10*
 
 ## Methods
 
-### `.create( element [, animationOption ] )`
+### `.create( DOMElement [, animationOption ] )`
 
 Create and animation setting.
 
-**element**
+#### DOMElement
 
 Type: *Element*
 
-**animationOption**
+#### animationOption
 
 Type: *Object*
 
@@ -124,7 +124,6 @@ Live reload.
 
 * `coffeelint`
 * `coffee`
-* `copy`
 
 ### `grunt b`
 
@@ -138,11 +137,10 @@ Build.
 
 #### Tasks
 
-* `bumpup`
-* `copy`
 * `coffeelint`
 * `coffee`
 * `uglify`
+* `bumpup`
 
 ### `grunt u`
 

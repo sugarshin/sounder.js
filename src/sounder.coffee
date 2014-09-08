@@ -6,13 +6,54 @@ sounder.js License MIT
 
   class Sounder
 
-    constructor: (
-      # Default prop -------------------
-      @size = [20, 4]
-      @color = '#e74c3c'
-      @column = 6
-      @maxHeight = 10
-    ) ->
+    constructor: (option) ->
+
+      defaults =
+        size: [20, 4]
+        color: '#e74c3c'
+        column: 6
+        maxHeight: 10
+
+      deepExtend = (out) ->
+        out = out || {}
+
+        isType = (type, obj) ->
+          clas = Object.prototype.toString.call(obj).slice(8, -1)
+          obj isnt undefined and obj isnt null and clas is type
+
+        for i in [1...arguments.length]
+          obj = arguments[i]
+
+          if not obj
+            continue
+
+          for key, val of obj
+            if obj.hasOwnProperty(key)
+              # if typeof val is 'object'
+              if isType 'Object', val
+                deepExtend out[key], val
+              else
+                out[key] = val
+        out
+
+      extend = (out) ->
+        out = out || {}
+
+        for i in [1...arguments.length]
+
+          if not arguments[i]
+            continue
+
+          for key, val of arguments[i]
+            if arguments[i].hasOwnProperty(key)
+              out[key] = arguments[i][key]
+        out
+
+      # @option = extend({}, defaults, option);
+
+      @option = deepExtend({}, defaults, option);
+
+
 
 
 
@@ -57,6 +98,8 @@ sounder.js License MIT
       return children
 
     init = (_this) ->
+      opt = _this.option
+
       _this.wrapper = null if _this.wrapper
       _this.fragment = null if _this.fragment
 
@@ -65,7 +108,7 @@ sounder.js License MIT
 
       fragment = document.createDocumentFragment()
 
-      for i in [0..._this.column]
+      for i in [0...opt.column]
         col = document.createElement 'div'
         div = document.createElement 'div'
         div.className = 'fragment'
@@ -82,9 +125,9 @@ sounder.js License MIT
       _this.fragment = getChildNode wrapper
 
       _this.wrapper.style.height =
-        _this.size[1] * 1.5 * _this.maxHeight + 'px'
+        opt.size[1] * 1.5 * opt.maxHeight + 'px'
       _this.wrapper.style.lineHeight =
-        _this.size[1] * 1.5 * _this.maxHeight + 'px'
+        opt.size[1] * 1.5 * opt.maxHeight + 'px'
 
       for i in _this.fragment
         i.style.display = 'inline-block'
@@ -121,14 +164,15 @@ sounder.js License MIT
       return
 
     styling = (_this, target) ->
+      opt = _this.option
       styles = target.style
-      styles.width = _this.size[0] + 'px'
-      styles.height = _this.size[1] + 'px'
-      styles.margin = '0 1px ' + Math.floor((_this.size[1] / 2)) + 'px'
-      if _this.color == 'tsumiki'
+      styles.width = opt.size[0] + 'px'
+      styles.height = opt.size[1] + 'px'
+      styles.margin = '0 1px ' + Math.floor((opt.size[1] / 2)) + 'px'
+      if opt.color == 'tsumiki'
         styles.background = tsumikiColor[Math.floor Math.random() * 10]
       else
-        styles.background = _this.color
+        styles.background = opt.color
       return
 
     rendering = (_this, output) ->
@@ -162,7 +206,7 @@ sounder.js License MIT
 
         if currentLength == 1
           doAddFragment i
-        else if currentLength == _this.maxHeight
+        else if currentLength == _this.option.maxHeight
           doRemoveFragment i
         else
           doAdjust[Math.floor(Math.random() * 2)] i

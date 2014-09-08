@@ -49,15 +49,22 @@
     <small>&copy; Tsumiki inc. &amp; github.com/sugarshin</small>
   </p>
 
-  <script src="sounder.js"></script>
+  <script src="../dest/sounder.js"></script>
   <script>
     (function () {
-      var s = new Sounder([16, 4], 'tsumiki', 11, 10),
+      var s = new Sounder({
+        size: [16, 4],
+        color: 'tsumiki',
+        column: 11,
+        maxHeight: 10
+      }),
           output = document.getElementById('output');
 
       s.create(output, {
-        autoPlay: true
+        autoPlay: true,
+        speed: 50
       });
+
 
       var start = document.getElementById('start'),
           stop = document.getElementById('stop'),
