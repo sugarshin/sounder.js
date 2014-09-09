@@ -52,6 +52,14 @@
   <script src="../dest/sounder.js"></script>
   <script>
     (function () {
+      var addEvent = function(el, type, func) {
+        if (el.addEventListener) {
+          el.addEventListener(type, func, false);
+        } else if (el.attachEvent){
+          el.attachEvent('on' + type, func);
+        }
+      };
+
       var s = new Sounder({
         size: [16, 4],
         color: 'tsumiki',
@@ -66,26 +74,19 @@
       });
 
 
+
       var start = document.getElementById('start'),
           stop = document.getElementById('stop'),
           reset = document.getElementById('reset'),
           toggle = document.getElementById('toggle');
 
-      start.addEventListener('click', function() {
-        s.start()
-      });
+      addEvent(start, 'click', s.start);
 
-      stop.addEventListener('click', function() {
-        s.stop()
-      });
+      addEvent(stop, 'click', s.stop);
 
-      reset.addEventListener('click', function() {
-        s.reset()
-      });
+      addEvent(reset, 'click', s.reset);
 
-      toggle.addEventListener('click', function() {
-        s.toggle()
-      });
+      addEvent(toggle, 'click', s.toggle);
 
     })();
   </script>
