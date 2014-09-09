@@ -2,7 +2,7 @@
 
 Sound effector small JavaScript library.
 
-v0.4.0
+v0.5.0
 
 ## Demo
 
@@ -155,6 +155,10 @@ Build.
 #### Tasks
 
 * `bumpup` only
+
+## Support browser
+
+Modern browser and IE8+
 
 ## License
 

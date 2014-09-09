@@ -2,61 +2,26 @@
 /*!
 sounder.js License MIT
  */
-(function(exports) {
-  var Sounder;
+
+(function() {
+  var Sounder,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
   Sounder = (function() {
-    var animation, animeInit, fragmentAdjust, getChildNode, init, rendering, shuffle, styling, tsumikiColor;
+    var animation, animeInit, deepExtend, extend, fragmentAdjust, getChildNode, init, isType, rendering, shuffle, styling, tsumikiColor;
 
     function Sounder(option) {
-      var deepExtend, defaults, extend;
+      this.reset = __bind(this.reset, this);
+      this.toggle = __bind(this.toggle, this);
+      this.stop = __bind(this.stop, this);
+      this.start = __bind(this.start, this);
+      this.create = __bind(this.create, this);
+      var defaults;
       defaults = {
         size: [20, 4],
         color: '#e74c3c',
         column: 6,
         maxHeight: 10
-      };
-      deepExtend = function(out) {
-        var i, isType, key, obj, val, _i, _ref;
-        out = out || {};
-        isType = function(type, obj) {
-          var clas;
-          clas = Object.prototype.toString.call(obj).slice(8, -1);
-          return obj !== void 0 && obj !== null && clas === type;
-        };
-        for (i = _i = 1, _ref = arguments.length; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
-          obj = arguments[i];
-          if (!obj) {
-            continue;
-          }
-          for (key in obj) {
-            val = obj[key];
-            if (obj.hasOwnProperty(key)) {
-              if (isType('Object', val)) {
-                deepExtend(out[key], val);
-              } else {
-                out[key] = val;
-              }
-            }
-          }
-        }
-        return out;
-      };
-      extend = function(out) {
-        var i, key, val, _i, _ref, _ref1;
-        out = out || {};
-        for (i = _i = 1, _ref = arguments.length; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
-          if (!arguments[i]) {
-            continue;
-          }
-          _ref1 = arguments[i];
-          for (key in _ref1) {
-            val = _ref1[key];
-            if (arguments[i].hasOwnProperty(key)) {
-              out[key] = arguments[i][key];
-            }
-          }
-        }
-        return out;
       };
       this.option = deepExtend({}, defaults, option);
     }
@@ -68,6 +33,52 @@ sounder.js License MIT
     };
 
     tsumikiColor = ['#23AAA4', '#5AB5B0', '#78BEB2', '#686F89', '#DC5D54', '#DD6664', '#D94142', '#E78E21', '#E9A21F', '#EDB51C'];
+
+    isType = function(type, obj) {
+      var clas;
+      clas = Object.prototype.toString.call(obj).slice(8, -1);
+      return obj !== void 0 && obj !== null && clas === type;
+    };
+
+    deepExtend = function(out) {
+      var i, key, obj, val, _i, _ref;
+      out = out || {};
+      for (i = _i = 1, _ref = arguments.length; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
+        obj = arguments[i];
+        if (!obj) {
+          continue;
+        }
+        for (key in obj) {
+          val = obj[key];
+          if (obj.hasOwnProperty(key)) {
+            if (isType('Object', val)) {
+              deepExtend(out[key], val);
+            } else {
+              out[key] = val;
+            }
+          }
+        }
+      }
+      return out;
+    };
+
+    extend = function(out) {
+      var i, key, val, _i, _ref, _ref1;
+      out = out || {};
+      for (i = _i = 1, _ref = arguments.length; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
+        if (!arguments[i]) {
+          continue;
+        }
+        _ref1 = arguments[i];
+        for (key in _ref1) {
+          val = _ref1[key];
+          if (arguments[i].hasOwnProperty(key)) {
+            out[key] = arguments[i][key];
+          }
+        }
+      }
+      return out;
+    };
 
     shuffle = function(array) {
       var random;
@@ -241,5 +252,9 @@ sounder.js License MIT
     return Sounder;
 
   })();
-  exports.Sounder = exports.Sounder || Sounder;
-})(this);
+
+  window.Sounder = window.Sounder || Sounder;
+
+  return;
+
+}).call(this);
