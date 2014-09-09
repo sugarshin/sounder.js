@@ -97,9 +97,7 @@ module.exports = (grunt) ->
     grunt.task.run 'bumpup:' + type
     return
 
-  grunt.registerTask 'b', 'Build.', (type) ->
-    # type >> major minor patch
-    grunt.task.run 'bumpup:' + type
+  grunt.registerTask 'b', 'Build.', ->
     grunt.task.run 'coffeelint'
     grunt.task.run 'coffee'
     grunt.task.run 'uglify'

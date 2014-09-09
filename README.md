@@ -125,26 +125,9 @@ Live reload.
 * `coffeelint`
 * `coffee`
 
-### `grunt b`
-
-Build.
-
-#### Parameter
-
-* `grunt b:major` // Major version up
-* `grunt b:minor` // Minor version up
-* `grunt b:patch` // Patch
-
-#### Tasks
-
-* `coffeelint`
-* `coffee`
-* `uglify`
-* `bumpup`
-
 ### `grunt u`
 
-`package.json` version update.
+`package.json`, `bower.json` version property update.
 
 #### Parameter
 
@@ -154,7 +137,17 @@ Build.
 
 #### Tasks
 
-* `bumpup` only
+* `bumpup`
+
+### `grunt b`
+
+Build.
+
+#### Tasks
+
+* `coffeelint`
+* `coffee`
+* `uglify`
 
 ## Support browser
 
