@@ -8,22 +8,24 @@ sounder.js License MIT
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   Sounder = (function() {
-    var animation, animeInit, deepExtend, extend, fragmentAdjust, getChildNode, init, isType, rendering, shuffle, styling, tsumikiColor;
+    var animation, fragmentAdjust, init, rendering, styling, tsumikiColor, _deepExtend, _extend, _getChildNode, _isType, _shuffle;
 
     function Sounder(option) {
       this.reset = __bind(this.reset, this);
       this.toggle = __bind(this.toggle, this);
-      this.stop = __bind(this.stop, this);
-      this.start = __bind(this.start, this);
+      this.pause = __bind(this.pause, this);
+      this.play = __bind(this.play, this);
       this.create = __bind(this.create, this);
       var defaults;
       defaults = {
         size: [20, 4],
         color: '#e74c3c',
         column: 6,
-        maxHeight: 10
+        maxHeight: 10,
+        autoPlay: false,
+        speed: 60
       };
-      this.option = deepExtend({}, defaults, option);
+      this.option = _deepExtend({}, defaults, option);
     }
 
     Sounder.name = 'Sounder';
@@ -34,13 +36,13 @@ sounder.js License MIT
 
     tsumikiColor = ['#23AAA4', '#5AB5B0', '#78BEB2', '#686F89', '#DC5D54', '#DD6664', '#D94142', '#E78E21', '#E9A21F', '#EDB51C'];
 
-    isType = function(type, obj) {
+    _isType = function(type, obj) {
       var clas;
       clas = Object.prototype.toString.call(obj).slice(8, -1);
       return obj !== void 0 && obj !== null && clas === type;
     };
 
-    deepExtend = function(out) {
+    _deepExtend = function(out) {
       var i, key, obj, val, _i, _ref;
       out = out || {};
       for (i = _i = 1, _ref = arguments.length; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
@@ -51,8 +53,8 @@ sounder.js License MIT
         for (key in obj) {
           val = obj[key];
           if (obj.hasOwnProperty(key)) {
-            if (isType('Object', val)) {
-              deepExtend(out[key], val);
+            if (_isType('Object', val)) {
+              _deepExtend(out[key], val);
             } else {
               out[key] = val;
             }
@@ -62,7 +64,7 @@ sounder.js License MIT
       return out;
     };
 
-    extend = function(out) {
+    _extend = function(out) {
       var i, key, val, _i, _ref, _ref1;
       out = out || {};
       for (i = _i = 1, _ref = arguments.length; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
@@ -80,7 +82,7 @@ sounder.js License MIT
       return out;
     };
 
-    shuffle = function(array) {
+    _shuffle = function(array) {
       var random;
       random = array.map(Math.random);
       array.sort(function(a, b) {
@@ -88,7 +90,7 @@ sounder.js License MIT
       });
     };
 
-    getChildNode = function(el) {
+    _getChildNode = function(el) {
       var children, i, _i, _len, _ref;
       children = [];
       _ref = el.children;
@@ -125,7 +127,7 @@ sounder.js License MIT
       if (!_this.wrapper) {
         _this.wrapper = wrapper;
       }
-      _this.fragment = getChildNode(wrapper);
+      _this.fragment = _getChildNode(wrapper);
       _this.wrapper.style.height = opt.size[1] * 1.5 * opt.maxHeight + 'px';
       _this.wrapper.style.lineHeight = opt.size[1] * 1.5 * opt.maxHeight + 'px';
       _ref1 = _this.fragment;
@@ -136,18 +138,11 @@ sounder.js License MIT
       }
     };
 
-    animeInit = function(_this, opt) {
-      _this.speed = opt && opt.speed || 50;
-      if (opt && opt.autoPlay === true) {
-        animation(_this);
-      }
-    };
-
     animation = function(_this) {
       _this.isAnimation = true;
       (function() {
         var delay, loopAnime;
-        delay = _this.speed;
+        delay = _this.option.speed;
         loopAnime = function() {
           fragmentAdjust(_this);
           _this.animeTimer = setTimeout(loopAnime, delay);
@@ -186,7 +181,7 @@ sounder.js License MIT
       };
       doRemoveFragment = function(target) {
         var child;
-        child = getChildNode(target);
+        child = _getChildNode(target);
         child[0].parentNode.removeChild(child[0]);
       };
       doAdjust[0] = doAddFragment;
@@ -194,7 +189,7 @@ sounder.js License MIT
       _ref = _this.fragment;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         i = _ref[_i];
-        currentLength = getChildNode(i).length;
+        currentLength = _getChildNode(i).length;
         if (currentLength === 1) {
           doAddFragment(i);
         } else if (currentLength === _this.option.maxHeight) {
@@ -205,37 +200,44 @@ sounder.js License MIT
       }
     };
 
-    Sounder.prototype.create = function(output, animeOpt) {
+    Sounder.prototype.create = function(output) {
       init(this);
       rendering(this, output);
-
-      /*
-      animeOpt
-        autoPlay
-        speed
-       */
-      animeInit(this, animeOpt);
+      if (this.option.autoPlay === true) {
+        animation(this);
+      }
       return this;
     };
 
-    Sounder.prototype.start = function() {
-      if (!this.isAnimation) {
+    Sounder.prototype.play = function(callback) {
+      if (this.isAnimation !== true) {
         animation(this);
+        if (callback && typeof callback === 'function') {
+          callback();
+        }
       }
+      return this;
     };
 
-    Sounder.prototype.stop = function() {
-      clearTimeout(this.animeTimer);
-      delete this.animeTimer;
-      this.isAnimation = false;
+    Sounder.prototype.pause = function(callback) {
+      if (this.isAnimation === true) {
+        clearTimeout(this.animeTimer);
+        delete this.animeTimer;
+        this.isAnimation = false;
+        if (callback && typeof callback === 'function') {
+          callback();
+        }
+      }
+      return this;
     };
 
-    Sounder.prototype.toggle = function() {
+    Sounder.prototype.toggle = function(callback) {
       if (this.isAnimation) {
-        this.stop();
+        this.pause(callback);
       } else {
-        this.start();
+        this.play(callback);
       }
+      return this;
     };
 
     Sounder.prototype.reset = function() {
@@ -247,6 +249,7 @@ sounder.js License MIT
           i.removeChild(i.firstChild);
         }
       }
+      return this;
     };
 
     return Sounder;

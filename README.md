@@ -2,7 +2,7 @@
 
 Sound effector small JavaScript library.
 
-v0.5.0
+v0.6.0
 
 ## Demo
 
@@ -61,46 +61,57 @@ Type: *Number*
 
 Default: *10*
 
+### option.autoPlay
+
+Effect auto playing
+
+Type: *Boolean*
+
+Default: *false*
+
+### option.speed
+
+Effect animation speed
+
+Type: *Number*
+
+Default: *60*
+
 ## Methods
 
-### `.create( DOMElement [, animationOption ] )`
+### `.create( DOMElement )`
 
-Create and animation setting.
+Create and redering.
 
 #### DOMElement
 
 Type: *Element*
 
-#### animationOption
+**Returns:** `this`
 
-Type: *Object*
+### `.play( [callback] )`
 
-Default:
-
-```javascript
-{
-  autoPlay: false,
-  speed: 50
-}
-```
+Animation play.
 
 **Returns:** `this`
 
-### `.start()`
+### `.pause( [callback] )`
 
-Animation start.
+Animation pause.
 
-### `.stop()`
+**Returns:** `this`
 
-Animation stop.
+### `.toggle( [callback] )`
 
-### `.toggle()`
+Toggles the state between play and pause.
 
-Toggles the state between start and stop.
+**Returns:** `this`
 
 ### `.reset()`
 
 Effector reset.
+
+**Returns:** `this`
 
 ## Contributing
 

@@ -11,10 +11,12 @@ class Sounder
       color: '#e74c3c'
       column: 6
       maxHeight: 10
+      autoPlay: false
+      speed: 60
 
-    # @option = extend {}, defaults, option
+    # @option = _extend {}, defaults, option
 
-    @option = deepExtend {}, defaults, option
+    @option = _deepExtend {}, defaults, option
 
 
 
@@ -46,12 +48,13 @@ class Sounder
 
 
 
-  # Private method -------------------
-  isType = (type, obj) ->
+  # Helper -------------------------------------------------
+
+  _isType = (type, obj) ->
     clas = Object.prototype.toString.call(obj).slice(8, -1)
     obj isnt undefined and obj isnt null and clas is type
 
-  deepExtend = (out) ->
+  _deepExtend = (out) ->
     out = out || {}
 
     for i in [1...arguments.length]
@@ -63,13 +66,13 @@ class Sounder
       for key, val of obj
         if obj.hasOwnProperty(key)
           # if typeof val is 'object'
-          if isType 'Object', val
-            deepExtend out[key], val
+          if _isType 'Object', val
+            _deepExtend out[key], val
           else
             out[key] = val
     out
 
-  extend = (out) ->
+  _extend = (out) ->
     out = out || {}
 
     for i in [1...arguments.length]
@@ -82,17 +85,21 @@ class Sounder
           out[key] = arguments[i][key]
     out
 
-  shuffle = (array) ->
+  _shuffle = (array) ->
     random = array.map Math.random
     array.sort (a, b) ->
       return random[a] - random[b]
     return
 
-  getChildNode = (el) ->
+  _getChildNode = (el) ->
     children = []
     for i in el.children
       children.push i if i.nodeType != 8
     return children
+
+
+
+  # Private method ----------------------------------------
 
   init = (_this) ->
     opt = _this.option
@@ -119,7 +126,7 @@ class Sounder
       wrapper.appendChild col
 
     _this.wrapper = wrapper if !_this.wrapper
-    _this.fragment = getChildNode wrapper
+    _this.fragment = _getChildNode wrapper
 
     _this.wrapper.style.height =
       opt.size[1] * 1.5 * opt.maxHeight + 'px'
@@ -132,20 +139,12 @@ class Sounder
 
     return
 
-  animeInit = (_this, opt) ->
-    _this.speed = opt && opt.speed || 50
-
-    if opt && opt.autoPlay is true
-      animation _this
-
-    return
-
   animation = (_this) ->
 
     _this.isAnimation = true
 
     (() ->
-      delay = _this.speed
+      delay = _this.option.speed
 
       loopAnime = ->
         fragmentAdjust _this
@@ -193,7 +192,7 @@ class Sounder
       return
 
     doRemoveFragment = (target) ->
-      child = getChildNode target
+      child = _getChildNode target
       child[0].parentNode.removeChild child[0]
       return
 
@@ -201,7 +200,7 @@ class Sounder
     doAdjust[1] = doRemoveFragment
 
     for i in _this.fragment
-      currentLength = getChildNode(i).length
+      currentLength = _getChildNode(i).length
 
       if currentLength == 1
         doAddFragment i
@@ -216,42 +215,44 @@ class Sounder
 
   # prototype ------------------------
 
-  create: (output, animeOpt) =>
+  create: (output) =>
     init @
 
     rendering @, output
 
-    ###
-    animeOpt
-      autoPlay
-      speed
-    ###
-    animeInit @, animeOpt
+    if @option.autoPlay is true
+      animation @
 
-    return @
+    @
 
-  start: =>
-    animation @ if !@isAnimation
-    return
+  play: (callback) =>
+    if @isAnimation isnt true
+      animation @
+      if callback and typeof callback is 'function'
+        callback()
+    @
 
-  stop: =>
-    clearTimeout @animeTimer
-    delete @animeTimer
-    @isAnimation = false
-    return
+  pause: (callback) =>
+    if @isAnimation is true
+      clearTimeout @animeTimer
+      delete @animeTimer
+      @isAnimation = false
+      if callback and typeof callback is 'function'
+        callback()
+    @
 
-  toggle: =>
+  toggle: (callback) =>
     if @isAnimation
-      @stop()
+      @pause callback
     else
-      @start()
-    return
+      @play callback
+    @
 
   reset: =>
     for i in @fragment
       while(i.childNodes[1])
         i.removeChild i.firstChild
-    return
+    @
 
 window.Sounder = window.Sounder || Sounder
 
