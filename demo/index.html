@@ -95,7 +95,9 @@
         })
       });
 
-      _addEvent(reset, 'click', s.reset);
+      _addEvent(reset, 'click', function() {
+        s.reset();
+      });
 
     })();
   </script>

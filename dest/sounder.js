@@ -4,18 +4,12 @@ sounder.js License MIT
  */
 
 (function() {
-  var Sounder,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var Sounder;
 
   Sounder = (function() {
     var animation, fragmentAdjust, init, rendering, styling, tsumikiColor, _deepExtend, _extend, _getChildNode, _isType, _shuffle;
 
     function Sounder(option) {
-      this.reset = __bind(this.reset, this);
-      this.toggle = __bind(this.toggle, this);
-      this.pause = __bind(this.pause, this);
-      this.play = __bind(this.play, this);
-      this.create = __bind(this.create, this);
       var defaults;
       defaults = {
         size: [20, 4],

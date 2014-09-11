@@ -215,7 +215,7 @@ class Sounder
 
   # prototype ------------------------
 
-  create: (output) =>
+  create: (output) ->
     init @
 
     rendering @, output
@@ -225,14 +225,14 @@ class Sounder
 
     @
 
-  play: (callback) =>
+  play: (callback) ->
     if @isAnimation isnt true
       animation @
       if callback and typeof callback is 'function'
         callback()
     @
 
-  pause: (callback) =>
+  pause: (callback) ->
     if @isAnimation is true
       clearTimeout @animeTimer
       delete @animeTimer
@@ -241,14 +241,14 @@ class Sounder
         callback()
     @
 
-  toggle: (callback) =>
+  toggle: (callback) ->
     if @isAnimation
       @pause callback
     else
       @play callback
     @
 
-  reset: =>
+  reset: ->
     for i in @fragment
       while(i.childNodes[1])
         i.removeChild i.firstChild
