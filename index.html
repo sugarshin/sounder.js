@@ -39,10 +39,10 @@
 
   <div id="output"></div>
   <div class="control">
-    <button id="start">start</button>
-    <button id="stop">stop</button>
-    <button id="reset">reset</button>
+    <button id="play">play</button>
+    <button id="pause">pause</button>
     <button id="toggle">toggle</button>
+    <button id="reset">reset</button>
   </div>
 
   <p class="copyright">
@@ -52,7 +52,7 @@
   <script src="../dest/sounder.js"></script>
   <script>
     (function () {
-      var addEvent = function(el, type, func) {
+      var _addEvent = function(el, type, func) {
         if (el.addEventListener) {
           el.addEventListener(type, func, false);
         } else if (el.attachEvent){
@@ -64,29 +64,38 @@
         size: [16, 4],
         color: 'tsumiki',
         column: 11,
-        maxHeight: 10
+        maxHeight: 10,
+        autoPlay: true,
+        speed: 50
       }),
           output = document.getElementById('output');
 
-      s.create(output, {
-        autoPlay: true,
-        speed: 50
-      });
+      s.create(output);
 
-
-
-      var start = document.getElementById('start'),
-          stop = document.getElementById('stop'),
+      var play = document.getElementById('play'),
+          pause = document.getElementById('pause'),
           reset = document.getElementById('reset'),
           toggle = document.getElementById('toggle');
 
-      addEvent(start, 'click', s.start);
+      _addEvent(play, 'click', function() {
+        s.play(function() {
+          console.log('Effect played!!');
+        });
+      });
 
-      addEvent(stop, 'click', s.stop);
+      _addEvent(pause, 'click', function() {
+        s.pause(function() {
+          console.log('Effect paused!!');
+        });
+      });
 
-      addEvent(reset, 'click', s.reset);
+      _addEvent(toggle, 'click', function(){
+        s.toggle(function() {
+          console.log('Effect toggled!!');
+        })
+      });
 
-      addEvent(toggle, 'click', s.toggle);
+      _addEvent(reset, 'click', s.reset);
 
     })();
   </script>
