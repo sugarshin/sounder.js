@@ -33,7 +33,7 @@ Piece size
 
 Type: *Array*
 
-Default: *[20, 4]*
+Default: `[20, 4]`
 
 #### option.color
 
@@ -43,7 +43,7 @@ Support `'tsumiki'` coloring.
 
 Type: *String*
 
-Default: *'#e74c3c'*
+Default: `'#e74c3c'`
 
 #### option.column
 
@@ -51,7 +51,7 @@ Effect column length
 
 Type: *Number*
 
-Default: *6*
+Default: `6`
 
 #### option.maxHeight
 
@@ -59,23 +59,23 @@ Effect max height length
 
 Type: *Number*
 
-Default: *10*
+Default: `10`
 
-### option.autoPlay
+#### option.autoPlay
 
 Effect auto playing
 
 Type: *Boolean*
 
-Default: *false*
+Default: `false`
 
-### option.speed
+#### option.speed
 
 Effect animation speed
 
 Type: *Number*
 
-Default: *60*
+Default: `60`
 
 ## Methods
 

@@ -33,7 +33,7 @@ class Sounder
 
   # Private prop ---------------------
 
-  tsumikiColor = [
+  _tsumikiColor = [
     '#23AAA4'
     '#5AB5B0'
     '#78BEB2'
@@ -101,7 +101,7 @@ class Sounder
 
   # Private method ----------------------------------------
 
-  init = (_this) ->
+  _init = (_this) ->
     opt = _this.option
 
     _this.wrapper = null if _this.wrapper
@@ -118,7 +118,7 @@ class Sounder
       div.className = 'fragment'
 
       # Styling piece
-      styling _this, div
+      _styling _this, div
 
       fragment.appendChild div
       col.className = 'col'
@@ -139,7 +139,7 @@ class Sounder
 
     return
 
-  animation = (_this) ->
+  _animation = (_this) ->
 
     _this.isAnimation = true
 
@@ -147,7 +147,7 @@ class Sounder
       delay = _this.option.speed
 
       loopAnime = ->
-        fragmentAdjust _this
+        _fragmentAdjust _this
 
         _this.animeTimer = setTimeout loopAnime, delay
         return
@@ -159,7 +159,7 @@ class Sounder
 
     return
 
-  styling = (_this, target) ->
+  _styling = (_this, target) ->
     opt = _this.option
     styles = target.style
 
@@ -167,18 +167,18 @@ class Sounder
     styles.height = opt.size[1] + 'px'
     styles.margin = '0 1px ' + Math.floor((opt.size[1] / 2)) + 'px'
 
-    if opt.color == 'tsumiki'
-      styles.background = tsumikiColor[Math.floor Math.random() * 10]
+    if opt.color is 'tsumiki'
+      styles.background = _tsumikiColor[Math.floor Math.random() * 10]
     else
       styles.background = opt.color
     return
 
-  rendering = (_this, output) ->
+  _rendering = (_this, output) ->
     output.appendChild _this.wrapper
 
     return
 
-  fragmentAdjust = (_this) ->
+  _fragmentAdjust = (_this) ->
     doAdjust = []
 
     doAddFragment = (target) ->
@@ -186,7 +186,7 @@ class Sounder
       div.className = 'fragment'
 
       # Styling piece
-      styling _this, div
+      _styling _this, div
 
       target.insertBefore div, target.firstChild
       return
@@ -202,9 +202,9 @@ class Sounder
     for i in _this.fragment
       currentLength = _getChildNode(i).length
 
-      if currentLength == 1
+      if currentLength is 1
         doAddFragment i
-      else if currentLength == _this.option.maxHeight
+      else if currentLength is _this.option.maxHeight
         doRemoveFragment i
       else
         doAdjust[Math.floor(Math.random() * 2)] i
@@ -216,18 +216,18 @@ class Sounder
   # prototype ------------------------
 
   create: (output) ->
-    init @
+    _init @
 
-    rendering @, output
+    _rendering @, output
 
     if @option.autoPlay is true
-      animation @
+      _animation @
 
     @
 
   play: (callback) ->
     if @isAnimation isnt true
-      animation @
+      _animation @
       if callback and typeof callback is 'function'
         callback()
     @

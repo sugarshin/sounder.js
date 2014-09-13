@@ -7,7 +7,7 @@ sounder.js License MIT
   var Sounder;
 
   Sounder = (function() {
-    var animation, fragmentAdjust, init, rendering, styling, tsumikiColor, _deepExtend, _extend, _getChildNode, _isType, _shuffle;
+    var _animation, _deepExtend, _extend, _fragmentAdjust, _getChildNode, _init, _isType, _rendering, _shuffle, _styling, _tsumikiColor;
 
     function Sounder(option) {
       var defaults;
@@ -28,7 +28,7 @@ sounder.js License MIT
       return this.name;
     };
 
-    tsumikiColor = ['#23AAA4', '#5AB5B0', '#78BEB2', '#686F89', '#DC5D54', '#DD6664', '#D94142', '#E78E21', '#E9A21F', '#EDB51C'];
+    _tsumikiColor = ['#23AAA4', '#5AB5B0', '#78BEB2', '#686F89', '#DC5D54', '#DD6664', '#D94142', '#E78E21', '#E9A21F', '#EDB51C'];
 
     _isType = function(type, obj) {
       var clas;
@@ -97,7 +97,7 @@ sounder.js License MIT
       return children;
     };
 
-    init = function(_this) {
+    _init = function(_this) {
       var col, div, fragment, i, opt, wrapper, _i, _j, _len, _ref, _ref1;
       opt = _this.option;
       if (_this.wrapper) {
@@ -112,7 +112,7 @@ sounder.js License MIT
         col = document.createElement('div');
         div = document.createElement('div');
         div.className = 'fragment';
-        styling(_this, div);
+        _styling(_this, div);
         fragment.appendChild(div);
         col.className = 'col';
         col.appendChild(fragment);
@@ -132,20 +132,20 @@ sounder.js License MIT
       }
     };
 
-    animation = function(_this) {
+    _animation = function(_this) {
       _this.isAnimation = true;
       (function() {
         var delay, loopAnime;
         delay = _this.option.speed;
         loopAnime = function() {
-          fragmentAdjust(_this);
+          _fragmentAdjust(_this);
           _this.animeTimer = setTimeout(loopAnime, delay);
         };
         setTimeout(loopAnime, delay);
       })();
     };
 
-    styling = function(_this, target) {
+    _styling = function(_this, target) {
       var opt, styles;
       opt = _this.option;
       styles = target.style;
@@ -153,24 +153,24 @@ sounder.js License MIT
       styles.height = opt.size[1] + 'px';
       styles.margin = '0 1px ' + Math.floor(opt.size[1] / 2) + 'px';
       if (opt.color === 'tsumiki') {
-        styles.background = tsumikiColor[Math.floor(Math.random() * 10)];
+        styles.background = _tsumikiColor[Math.floor(Math.random() * 10)];
       } else {
         styles.background = opt.color;
       }
     };
 
-    rendering = function(_this, output) {
+    _rendering = function(_this, output) {
       output.appendChild(_this.wrapper);
     };
 
-    fragmentAdjust = function(_this) {
+    _fragmentAdjust = function(_this) {
       var currentLength, doAddFragment, doAdjust, doRemoveFragment, i, _i, _len, _ref;
       doAdjust = [];
       doAddFragment = function(target) {
         var div;
         div = document.createElement('div');
         div.className = 'fragment';
-        styling(_this, div);
+        _styling(_this, div);
         target.insertBefore(div, target.firstChild);
       };
       doRemoveFragment = function(target) {
@@ -195,17 +195,17 @@ sounder.js License MIT
     };
 
     Sounder.prototype.create = function(output) {
-      init(this);
-      rendering(this, output);
+      _init(this);
+      _rendering(this, output);
       if (this.option.autoPlay === true) {
-        animation(this);
+        _animation(this);
       }
       return this;
     };
 
     Sounder.prototype.play = function(callback) {
       if (this.isAnimation !== true) {
-        animation(this);
+        _animation(this);
         if (callback && typeof callback === 'function') {
           callback();
         }
