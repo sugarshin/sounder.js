@@ -14,8 +14,6 @@ class Sounder
       autoPlay: false
       speed: 60
 
-    # @option = _extend {}, defaults, option
-
     @option = _deepExtend {}, defaults, option
 
 
@@ -72,19 +70,6 @@ class Sounder
             out[key] = val
     out
 
-  _extend = (out) ->
-    out = out || {}
-
-    for i in [1...arguments.length]
-
-      if not arguments[i]
-        continue
-
-      for key, val of arguments[i]
-        if arguments[i].hasOwnProperty(key)
-          out[key] = arguments[i][key]
-    out
-
   _shuffle = (array) ->
     random = array.map Math.random
     array.sort (a, b) ->
@@ -101,11 +86,11 @@ class Sounder
 
   # Private method ----------------------------------------
 
-  _init = (_this) ->
+  init = (_this) ->
     opt = _this.option
 
     _this.wrapper = null if _this.wrapper
-    _this.fragment = null if _this.fragment
+    _this.bars = null if _this.bars
 
     wrapper =
       if _this.wrapper then _this.wrapper else document.createElement 'div'
@@ -118,7 +103,7 @@ class Sounder
       div.className = 'fragment'
 
       # Styling piece
-      _styling _this, div
+      styling _this, div
 
       fragment.appendChild div
       col.className = 'col'
@@ -126,20 +111,20 @@ class Sounder
       wrapper.appendChild col
 
     _this.wrapper = wrapper if !_this.wrapper
-    _this.fragment = _getChildNode wrapper
+    _this.bars = _getChildNode wrapper
 
     _this.wrapper.style.height =
       opt.size[1] * 1.5 * opt.maxHeight + 'px'
     _this.wrapper.style.lineHeight =
       opt.size[1] * 1.5 * opt.maxHeight + 'px'
 
-    for i in _this.fragment
+    for i in _this.bars
       i.style.display = 'inline-block'
       i.style.verticalAlign = 'bottom'
 
     return
 
-  _animation = (_this) ->
+  animation = (_this) ->
 
     _this.isAnimation = true
 
@@ -147,7 +132,7 @@ class Sounder
       delay = _this.option.speed
 
       loopAnime = ->
-        _fragmentAdjust _this
+        barsAdjust _this
 
         _this.animeTimer = setTimeout loopAnime, delay
         return
@@ -159,7 +144,7 @@ class Sounder
 
     return
 
-  _styling = (_this, target) ->
+  styling = (_this, target) ->
     opt = _this.option
     styles = target.style
 
@@ -173,12 +158,12 @@ class Sounder
       styles.background = opt.color
     return
 
-  _rendering = (_this, output) ->
+  rendering = (_this, output) ->
     output.appendChild _this.wrapper
 
     return
 
-  _fragmentAdjust = (_this) ->
+  barsAdjust = (_this) ->
     doAdjust = []
 
     doAddFragment = (target) ->
@@ -186,7 +171,7 @@ class Sounder
       div.className = 'fragment'
 
       # Styling piece
-      _styling _this, div
+      styling _this, div
 
       target.insertBefore div, target.firstChild
       return
@@ -199,15 +184,15 @@ class Sounder
     doAdjust[0] = doAddFragment
     doAdjust[1] = doRemoveFragment
 
-    for i in _this.fragment
-      currentLength = _getChildNode(i).length
+    for bar in _this.bars
+      currentLength = _getChildNode(bar).length
 
       if currentLength is 1
-        doAddFragment i
+        doAddFragment bar
       else if currentLength is _this.option.maxHeight
-        doRemoveFragment i
+        doRemoveFragment bar
       else
-        doAdjust[Math.floor(Math.random() * 2)] i
+        doAdjust[Math.floor(Math.random() * 2)] bar
 
     return
 
@@ -216,18 +201,17 @@ class Sounder
   # prototype ------------------------
 
   create: (output) ->
-    _init @
+    init @
 
-    _rendering @, output
+    rendering @, output
 
     if @option.autoPlay is true
-      _animation @
-
+      animation @
     @
 
   play: (callback) ->
     if @isAnimation isnt true
-      _animation @
+      animation @
       if callback and typeof callback is 'function'
         callback()
     @
@@ -249,9 +233,9 @@ class Sounder
     @
 
   reset: ->
-    for i in @fragment
-      while(i.childNodes[1])
-        i.removeChild i.firstChild
+    for bar in @bars
+      while(bar.childNodes[1])
+        bar.removeChild bar.firstChild
     @
 
 window.Sounder = window.Sounder || Sounder

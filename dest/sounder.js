@@ -7,7 +7,7 @@ sounder.js License MIT
   var Sounder;
 
   Sounder = (function() {
-    var _animation, _deepExtend, _extend, _fragmentAdjust, _getChildNode, _init, _isType, _rendering, _shuffle, _styling, _tsumikiColor;
+    var animation, barsAdjust, init, rendering, styling, _deepExtend, _getChildNode, _isType, _shuffle, _tsumikiColor;
 
     function Sounder(option) {
       var defaults;
@@ -58,24 +58,6 @@ sounder.js License MIT
       return out;
     };
 
-    _extend = function(out) {
-      var i, key, val, _i, _ref, _ref1;
-      out = out || {};
-      for (i = _i = 1, _ref = arguments.length; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
-        if (!arguments[i]) {
-          continue;
-        }
-        _ref1 = arguments[i];
-        for (key in _ref1) {
-          val = _ref1[key];
-          if (arguments[i].hasOwnProperty(key)) {
-            out[key] = arguments[i][key];
-          }
-        }
-      }
-      return out;
-    };
-
     _shuffle = function(array) {
       var random;
       random = array.map(Math.random);
@@ -97,14 +79,14 @@ sounder.js License MIT
       return children;
     };
 
-    _init = function(_this) {
+    init = function(_this) {
       var col, div, fragment, i, opt, wrapper, _i, _j, _len, _ref, _ref1;
       opt = _this.option;
       if (_this.wrapper) {
         _this.wrapper = null;
       }
-      if (_this.fragment) {
-        _this.fragment = null;
+      if (_this.bars) {
+        _this.bars = null;
       }
       wrapper = _this.wrapper ? _this.wrapper : document.createElement('div');
       fragment = document.createDocumentFragment();
@@ -112,7 +94,7 @@ sounder.js License MIT
         col = document.createElement('div');
         div = document.createElement('div');
         div.className = 'fragment';
-        _styling(_this, div);
+        styling(_this, div);
         fragment.appendChild(div);
         col.className = 'col';
         col.appendChild(fragment);
@@ -121,10 +103,10 @@ sounder.js License MIT
       if (!_this.wrapper) {
         _this.wrapper = wrapper;
       }
-      _this.fragment = _getChildNode(wrapper);
+      _this.bars = _getChildNode(wrapper);
       _this.wrapper.style.height = opt.size[1] * 1.5 * opt.maxHeight + 'px';
       _this.wrapper.style.lineHeight = opt.size[1] * 1.5 * opt.maxHeight + 'px';
-      _ref1 = _this.fragment;
+      _ref1 = _this.bars;
       for (_j = 0, _len = _ref1.length; _j < _len; _j++) {
         i = _ref1[_j];
         i.style.display = 'inline-block';
@@ -132,20 +114,20 @@ sounder.js License MIT
       }
     };
 
-    _animation = function(_this) {
+    animation = function(_this) {
       _this.isAnimation = true;
       (function() {
         var delay, loopAnime;
         delay = _this.option.speed;
         loopAnime = function() {
-          _fragmentAdjust(_this);
+          barsAdjust(_this);
           _this.animeTimer = setTimeout(loopAnime, delay);
         };
         setTimeout(loopAnime, delay);
       })();
     };
 
-    _styling = function(_this, target) {
+    styling = function(_this, target) {
       var opt, styles;
       opt = _this.option;
       styles = target.style;
@@ -159,18 +141,18 @@ sounder.js License MIT
       }
     };
 
-    _rendering = function(_this, output) {
+    rendering = function(_this, output) {
       output.appendChild(_this.wrapper);
     };
 
-    _fragmentAdjust = function(_this) {
-      var currentLength, doAddFragment, doAdjust, doRemoveFragment, i, _i, _len, _ref;
+    barsAdjust = function(_this) {
+      var bar, currentLength, doAddFragment, doAdjust, doRemoveFragment, _i, _len, _ref;
       doAdjust = [];
       doAddFragment = function(target) {
         var div;
         div = document.createElement('div');
         div.className = 'fragment';
-        _styling(_this, div);
+        styling(_this, div);
         target.insertBefore(div, target.firstChild);
       };
       doRemoveFragment = function(target) {
@@ -180,32 +162,32 @@ sounder.js License MIT
       };
       doAdjust[0] = doAddFragment;
       doAdjust[1] = doRemoveFragment;
-      _ref = _this.fragment;
+      _ref = _this.bars;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        i = _ref[_i];
-        currentLength = _getChildNode(i).length;
+        bar = _ref[_i];
+        currentLength = _getChildNode(bar).length;
         if (currentLength === 1) {
-          doAddFragment(i);
+          doAddFragment(bar);
         } else if (currentLength === _this.option.maxHeight) {
-          doRemoveFragment(i);
+          doRemoveFragment(bar);
         } else {
-          doAdjust[Math.floor(Math.random() * 2)](i);
+          doAdjust[Math.floor(Math.random() * 2)](bar);
         }
       }
     };
 
     Sounder.prototype.create = function(output) {
-      _init(this);
-      _rendering(this, output);
+      init(this);
+      rendering(this, output);
       if (this.option.autoPlay === true) {
-        _animation(this);
+        animation(this);
       }
       return this;
     };
 
     Sounder.prototype.play = function(callback) {
       if (this.isAnimation !== true) {
-        _animation(this);
+        animation(this);
         if (callback && typeof callback === 'function') {
           callback();
         }
@@ -235,12 +217,12 @@ sounder.js License MIT
     };
 
     Sounder.prototype.reset = function() {
-      var i, _i, _len, _ref;
-      _ref = this.fragment;
+      var bar, _i, _len, _ref;
+      _ref = this.bars;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        i = _ref[_i];
-        while (i.childNodes[1]) {
-          i.removeChild(i.firstChild);
+        bar = _ref[_i];
+        while (bar.childNodes[1]) {
+          bar.removeChild(bar.firstChild);
         }
       }
       return this;
