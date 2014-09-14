@@ -86,53 +86,52 @@ class Sounder
 
   # Private method ----------------------------------------
 
-  init = (_this) ->
-    opt = _this.option
-
-    _this.wrapper = null if _this.wrapper
-    _this.bars = null if _this.bars
+  init = ->
+    @wrapper = null if @wrapper
+    @bars = null if @bars
 
     wrapper =
-      if _this.wrapper then _this.wrapper else document.createElement 'div'
+      if @wrapper then @wrapper else document.createElement 'div'
 
     fragment = document.createDocumentFragment()
 
-    for i in [0...opt.column]
+    for i in [0...@option.column]
       col = document.createElement 'div'
       div = document.createElement 'div'
       div.className = 'fragment'
 
       # Styling piece
-      styling _this, div
+      styling.call @, div
 
       fragment.appendChild div
       col.className = 'col'
       col.appendChild fragment
       wrapper.appendChild col
 
-    _this.wrapper = wrapper if !_this.wrapper
-    _this.bars = _getChildNode wrapper
+    @wrapper = wrapper if !@wrapper
+    @bars = _getChildNode wrapper
 
-    _this.wrapper.style.height =
-      opt.size[1] * 1.5 * opt.maxHeight + 'px'
-    _this.wrapper.style.lineHeight =
-      opt.size[1] * 1.5 * opt.maxHeight + 'px'
+    @wrapper.style.height =
+      @option.size[1] * 1.5 * @option.maxHeight + 'px'
+    @wrapper.style.lineHeight =
+      @option.size[1] * 1.5 * @option.maxHeight + 'px'
 
-    for i in _this.bars
+    for i in @bars
       i.style.display = 'inline-block'
       i.style.verticalAlign = 'bottom'
 
     return
 
-  animation = (_this) ->
+  animation = ->
+    _this = @
 
-    _this.isAnimation = true
+    @isAnimation = true
 
     (() ->
       delay = _this.option.speed
 
       loopAnime = ->
-        barsAdjust _this
+        barsAdjust.call _this
 
         _this.animeTimer = setTimeout loopAnime, delay
         return
@@ -144,26 +143,26 @@ class Sounder
 
     return
 
-  styling = (_this, target) ->
-    opt = _this.option
+  styling = (target) ->
     styles = target.style
 
-    styles.width = opt.size[0] + 'px'
-    styles.height = opt.size[1] + 'px'
-    styles.margin = '0 1px ' + Math.floor((opt.size[1] / 2)) + 'px'
+    styles.width = @option.size[0] + 'px'
+    styles.height = @option.size[1] + 'px'
+    styles.margin = '0 1px ' + Math.floor((@option.size[1] / 2)) + 'px'
 
-    if opt.color is 'tsumiki'
+    if @option.color is 'tsumiki'
       styles.background = _tsumikiColor[Math.floor Math.random() * 10]
     else
-      styles.background = opt.color
+      styles.background = @option.color
     return
 
-  rendering = (_this, output) ->
-    output.appendChild _this.wrapper
+  rendering = (output) ->
+    output.appendChild @wrapper
 
     return
 
-  barsAdjust = (_this) ->
+  barsAdjust = ->
+    _this = @
     doAdjust = []
 
     doAddFragment = (target) ->
@@ -171,7 +170,7 @@ class Sounder
       div.className = 'fragment'
 
       # Styling piece
-      styling _this, div
+      styling.call _this, div
 
       target.insertBefore div, target.firstChild
       return
@@ -184,12 +183,12 @@ class Sounder
     doAdjust[0] = doAddFragment
     doAdjust[1] = doRemoveFragment
 
-    for bar in _this.bars
+    for bar in @bars
       currentLength = _getChildNode(bar).length
 
       if currentLength is 1
         doAddFragment bar
-      else if currentLength is _this.option.maxHeight
+      else if currentLength is @option.maxHeight
         doRemoveFragment bar
       else
         doAdjust[Math.floor(Math.random() * 2)] bar
@@ -201,17 +200,17 @@ class Sounder
   # prototype ------------------------
 
   create: (output) ->
-    init @
+    init.call @
 
-    rendering @, output
+    rendering.call @, output
 
     if @option.autoPlay is true
-      animation @
+      animation.call @
     @
 
   play: (callback) ->
     if @isAnimation isnt true
-      animation @
+      animation.call @
       if callback and typeof callback is 'function'
         callback()
     @
