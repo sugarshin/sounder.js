@@ -31,7 +31,7 @@ class Sounder
 
   # Private prop ---------------------
 
-  _tsumikiColor = [
+  tsumikiColor = [
     '#23AAA4'
     '#5AB5B0'
     '#78BEB2'
@@ -70,17 +70,11 @@ class Sounder
             out[key] = val
     out
 
-  _shuffle = (array) ->
-    random = array.map Math.random
-    array.sort (a, b) ->
-      return random[a] - random[b]
-    return
-
   _getChildNode = (el) ->
     children = []
-    for i in el.children
-      children.push i if i.nodeType != 8
-    return children
+    for child in el.children
+      children.push child if child.nodeType != 8
+    children
 
 
 
@@ -151,7 +145,7 @@ class Sounder
     styles.margin = '0 1px ' + Math.floor((@option.size[1] / 2)) + 'px'
 
     if @option.color is 'tsumiki'
-      styles.background = _tsumikiColor[Math.floor Math.random() * 10]
+      styles.background = tsumikiColor[Math.floor Math.random() * 10]
     else
       styles.background = @option.color
     return

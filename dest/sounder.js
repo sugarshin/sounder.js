@@ -7,7 +7,7 @@ sounder.js License MIT
   var Sounder;
 
   Sounder = (function() {
-    var animation, barsAdjust, init, rendering, styling, _deepExtend, _getChildNode, _isType, _shuffle, _tsumikiColor;
+    var animation, barsAdjust, init, rendering, styling, tsumikiColor, _deepExtend, _getChildNode, _isType;
 
     function Sounder(option) {
       var defaults;
@@ -28,7 +28,7 @@ sounder.js License MIT
       return this.name;
     };
 
-    _tsumikiColor = ['#23AAA4', '#5AB5B0', '#78BEB2', '#686F89', '#DC5D54', '#DD6664', '#D94142', '#E78E21', '#E9A21F', '#EDB51C'];
+    tsumikiColor = ['#23AAA4', '#5AB5B0', '#78BEB2', '#686F89', '#DC5D54', '#DD6664', '#D94142', '#E78E21', '#E9A21F', '#EDB51C'];
 
     _isType = function(type, obj) {
       var clas;
@@ -58,22 +58,14 @@ sounder.js License MIT
       return out;
     };
 
-    _shuffle = function(array) {
-      var random;
-      random = array.map(Math.random);
-      array.sort(function(a, b) {
-        return random[a] - random[b];
-      });
-    };
-
     _getChildNode = function(el) {
-      var children, i, _i, _len, _ref;
+      var child, children, _i, _len, _ref;
       children = [];
       _ref = el.children;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        i = _ref[_i];
-        if (i.nodeType !== 8) {
-          children.push(i);
+        child = _ref[_i];
+        if (child.nodeType !== 8) {
+          children.push(child);
         }
       }
       return children;
@@ -135,7 +127,7 @@ sounder.js License MIT
       styles.height = this.option.size[1] + 'px';
       styles.margin = '0 1px ' + Math.floor(this.option.size[1] / 2) + 'px';
       if (this.option.color === 'tsumiki') {
-        styles.background = _tsumikiColor[Math.floor(Math.random() * 10)];
+        styles.background = tsumikiColor[Math.floor(Math.random() * 10)];
       } else {
         styles.background = this.option.color;
       }
