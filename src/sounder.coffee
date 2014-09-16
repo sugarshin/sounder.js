@@ -121,7 +121,7 @@ class Sounder
 
     @isAnimation = true
 
-    (() ->
+    do ->
       delay = _this.option.speed
 
       loopAnime = ->
@@ -133,7 +133,6 @@ class Sounder
       setTimeout loopAnime, delay
 
       return
-    )()
 
     return
 

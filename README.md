@@ -2,7 +2,7 @@
 
 Sound effector small JavaScript library.
 
-v0.6.1
+v0.6.2
 
 ## Demo
 
