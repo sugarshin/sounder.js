@@ -80,6 +80,15 @@ module.exports = (grunt) ->
         'bower.json'
       ]
 
+    replace:
+      readmeBumpup:
+        src: ['README.md']
+        overwrite: true
+        replacements: [
+          from: /v\d+\.\d+\.\d+/g
+          to: 'v' + pkg.version
+        ]
+
   for t of pkg.devDependencies
     if t.substring(0, 6) is 'grunt-'
       grunt.loadNpmTasks t
@@ -98,6 +107,7 @@ module.exports = (grunt) ->
     return
 
   grunt.registerTask 'b', 'Build.', ->
+    grunt.task.run 'replace'
     grunt.task.run 'coffeelint'
     grunt.task.run 'coffee'
     grunt.task.run 'uglify'

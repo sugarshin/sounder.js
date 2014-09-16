@@ -123,7 +123,7 @@ npm i
 
 ### `grunt l`
 
-Live reload.
+CoffeeScript compile, Live reload
 
 #### Tasks
 
@@ -156,6 +156,7 @@ Build.
 
 #### Tasks
 
+* `replace` // README.md bumpup
 * `coffeelint`
 * `coffee`
 * `uglify`
