@@ -7,28 +7,13 @@ sounder.js License MIT
   var Sounder;
 
   Sounder = (function() {
-    var animation, barsAdjust, init, rendering, styling, tsumikiColor, _deepExtend, _getChildNode, _isType;
-
-    function Sounder(option) {
-      var defaults;
-      defaults = {
-        size: [20, 4],
-        color: '#e74c3c',
-        column: 6,
-        maxHeight: 10,
-        autoPlay: false,
-        speed: 60
-      };
-      this.option = _deepExtend({}, defaults, option);
-    }
+    var animation, barsAdjust, defaults, init, rendering, styling, tsumikiColor, _deepExtend, _getChildNode, _isType;
 
     Sounder.name = 'Sounder';
 
     Sounder.getName = function() {
       return this.name;
     };
-
-    tsumikiColor = ['#23AAA4', '#5AB5B0', '#78BEB2', '#686F89', '#DC5D54', '#DD6664', '#D94142', '#E78E21', '#E9A21F', '#EDB51C'];
 
     _isType = function(type, obj) {
       var clas;
@@ -71,15 +56,20 @@ sounder.js License MIT
       return children;
     };
 
+    defaults = {
+      size: [20, 4],
+      color: '#e74c3c',
+      column: 6,
+      maxHeight: 10,
+      autoPlay: false,
+      speed: 60
+    };
+
+    tsumikiColor = ['#23AAA4', '#5AB5B0', '#78BEB2', '#686F89', '#DC5D54', '#DD6664', '#D94142', '#E78E21', '#E9A21F', '#EDB51C'];
+
     init = function() {
       var col, div, fragment, i, wrapper, _i, _j, _len, _ref, _ref1;
-      if (this.wrapper) {
-        this.wrapper = null;
-      }
-      if (this.bars) {
-        this.bars = null;
-      }
-      wrapper = this.wrapper ? this.wrapper : document.createElement('div');
+      wrapper = document.createElement('div');
       fragment = document.createDocumentFragment();
       for (i = _i = 0, _ref = this.option.column; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
         col = document.createElement('div');
@@ -91,9 +81,7 @@ sounder.js License MIT
         col.appendChild(fragment);
         wrapper.appendChild(col);
       }
-      if (!this.wrapper) {
-        this.wrapper = wrapper;
-      }
+      this.wrapper = wrapper;
       this.bars = _getChildNode(wrapper);
       this.wrapper.style.height = this.option.size[1] * 1.5 * this.option.maxHeight + 'px';
       this.wrapper.style.lineHeight = this.option.size[1] * 1.5 * this.option.maxHeight + 'px';
@@ -169,6 +157,10 @@ sounder.js License MIT
       }
     };
 
+    function Sounder(option) {
+      this.option = _deepExtend({}, defaults, option);
+    }
+
     Sounder.prototype.create = function(output) {
       init.call(this);
       rendering.call(this, output);
@@ -181,7 +173,7 @@ sounder.js License MIT
     Sounder.prototype.play = function(callback) {
       if (this.isAnimation !== true) {
         animation.call(this);
-        if (callback && typeof callback === 'function') {
+        if ((callback != null) && typeof callback === 'function') {
           callback();
         }
       }
@@ -193,7 +185,7 @@ sounder.js License MIT
         clearTimeout(this.animeTimer);
         delete this.animeTimer;
         this.isAnimation = false;
-        if (callback && typeof callback === 'function') {
+        if ((callback != null) && typeof callback === 'function') {
           callback();
         }
       }
@@ -226,7 +218,5 @@ sounder.js License MIT
   })();
 
   window.Sounder = window.Sounder || Sounder;
-
-  return;
 
 }).call(this);

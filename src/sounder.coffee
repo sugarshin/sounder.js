@@ -4,45 +4,12 @@ sounder.js License MIT
 
 class Sounder
 
-  constructor: (option) ->
-
-    defaults =
-      size: [20, 4]
-      color: '#e74c3c'
-      column: 6
-      maxHeight: 10
-      autoPlay: false
-      speed: 60
-
-    @option = _deepExtend {}, defaults, option
-
-
-
-
-
-  # Static prop, method --------------
+  # Static -------------------------------------------------
 
   this.name = 'Sounder'
 
   this.getName = ->
     return this.name
-
-
-
-  # Private prop ---------------------
-
-  tsumikiColor = [
-    '#23AAA4'
-    '#5AB5B0'
-    '#78BEB2'
-    '#686F89'
-    '#DC5D54'
-    '#DD6664'
-    '#D94142'
-    '#E78E21'
-    '#E9A21F'
-    '#EDB51C'
-  ]
 
 
 
@@ -78,14 +45,35 @@ class Sounder
 
 
 
-  # Private method ----------------------------------------
+  # Private prop -------------------------------------------
+
+  defaults =
+    size: [20, 4]
+    color: '#e74c3c'
+    column: 6
+    maxHeight: 10
+    autoPlay: false
+    speed: 60
+
+  tsumikiColor = [
+    '#23AAA4'
+    '#5AB5B0'
+    '#78BEB2'
+    '#686F89'
+    '#DC5D54'
+    '#DD6664'
+    '#D94142'
+    '#E78E21'
+    '#E9A21F'
+    '#EDB51C'
+  ]
+
+
+
+  # Private method -----------------------------------------
 
   init = ->
-    @wrapper = null if @wrapper
-    @bars = null if @bars
-
-    wrapper =
-      if @wrapper then @wrapper else document.createElement 'div'
+    wrapper = document.createElement 'div'
 
     fragment = document.createDocumentFragment()
 
@@ -102,7 +90,8 @@ class Sounder
       col.appendChild fragment
       wrapper.appendChild col
 
-    @wrapper = wrapper if !@wrapper
+    @wrapper = wrapper
+
     @bars = _getChildNode wrapper
 
     @wrapper.style.height =
@@ -190,7 +179,13 @@ class Sounder
 
 
 
-  # prototype ------------------------
+  constructor: (option) ->
+
+    @option = _deepExtend {}, defaults, option
+
+
+
+  # Public -------------------------------------------------
 
   create: (output) ->
     init.call @
@@ -204,7 +199,7 @@ class Sounder
   play: (callback) ->
     if @isAnimation isnt true
       animation.call @
-      if callback and typeof callback is 'function'
+      if callback? and typeof callback is 'function'
         callback()
     @
 
@@ -213,7 +208,7 @@ class Sounder
       clearTimeout @animeTimer
       delete @animeTimer
       @isAnimation = false
-      if callback and typeof callback is 'function'
+      if callback? and typeof callback is 'function'
         callback()
     @
 
@@ -231,5 +226,3 @@ class Sounder
     @
 
 window.Sounder = window.Sounder || Sounder
-
-return
