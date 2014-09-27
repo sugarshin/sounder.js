@@ -2,8 +2,6 @@
 
 Sound effector small JavaScript library.
 
-v0.6.3
-
 ## Demo
 
 [https://tsumikiinc.github.io/sounder.js/demo/](https://tsumikiinc.github.io/sounder.js/demo/)
@@ -115,51 +113,69 @@ Effector reset.
 
 ## Contributing
 
-Using Grunt
+Using gulp
 
 ```shell
 npm i
 ```
 
-### `grunt l`
+### `gulp`
 
 CoffeeScript compile, Live reload
 
+Default gulp task
+
 #### Tasks
 
-* `connect`
-* `watch`
-* `notify_hooks`
+* `serve` `browserSync()`
+* `watch` `gulp.watch()`
 
-##### `watch` tasks
+##### `gulp.watch` tasks
 
-* `coffeelint`
-* `coffee`
+* `notify` `plumber({errorHandler: notify.onError})`
+* `coffeelint` `coffeelint()`
+* `coffee` `coffee()`
 
-### `grunt u`
+### `gulp patch`
+
+Patch
 
 `package.json`, `bower.json` version property update.
 
-#### Parameter
+#### Tasks
 
-* `grunt u:major` // Major version up
-* `grunt u:minor` // Minor version up
-* `grunt u:patch` // Patch
+* `bump` `bump({type: 'patch'})`
+
+### `gulp minor`
+
+Minor update
+
+`package.json`, `bower.json` version property update.
 
 #### Tasks
 
-* `bumpup`
+* `bump` `bump({type: 'minor'})`
 
-### `grunt b`
+### `gulp major`
 
-Build.
+Major update
+
+`package.json`, `bower.json` version property update.
 
 #### Tasks
 
-* `replace` // README.md bumpup
-* `coffeelint`
-* `coffee`
-* `uglify`
+* `bump` `bump({type: 'major'})`
+
+### `gulp build`
+
+Build
+
+#### Tasks
+
+* `coffeelint()`
+* `coffee()`
+* `uglify()`
+* `rename()`
 
 ## Support browser
 
