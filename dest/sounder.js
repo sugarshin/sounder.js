@@ -1,13 +1,14 @@
 
 /*!
-sounder.js License MIT
+Sounder.js
+License MIT
  */
 
 (function() {
   var Sounder;
 
   Sounder = (function() {
-    var animation, barsAdjust, defaults, init, rendering, styling, tsumikiColor, _deepExtend, _getChildNode, _isType;
+    var animation, barsAdjust, defaults, init, rendering, styling, tsumikiColor, _extend, _getChildNode;
 
     Sounder.name = 'Sounder';
 
@@ -15,28 +16,18 @@ sounder.js License MIT
       return this.name;
     };
 
-    _isType = function(type, obj) {
-      var clas;
-      clas = Object.prototype.toString.call(obj).slice(8, -1);
-      return obj !== void 0 && obj !== null && clas === type;
-    };
-
-    _deepExtend = function(out) {
-      var i, key, obj, val, _i, _ref;
+    _extend = function(out) {
+      var i, key, val, _i, _ref, _ref1;
       out = out || {};
       for (i = _i = 1, _ref = arguments.length; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
-        obj = arguments[i];
-        if (!obj) {
+        if (!arguments[i]) {
           continue;
         }
-        for (key in obj) {
-          val = obj[key];
-          if (obj.hasOwnProperty(key)) {
-            if (_isType('Object', val)) {
-              _deepExtend(out[key], val);
-            } else {
-              out[key] = val;
-            }
+        _ref1 = arguments[i];
+        for (key in _ref1) {
+          val = _ref1[key];
+          if (arguments[i].hasOwnProperty(key)) {
+            out[key] = val;
           }
         }
       }
@@ -68,7 +59,7 @@ sounder.js License MIT
     tsumikiColor = ['#23AAA4', '#5AB5B0', '#78BEB2', '#686F89', '#DC5D54', '#DD6664', '#D94142', '#E78E21', '#E9A21F', '#EDB51C'];
 
     init = function() {
-      var col, div, fragment, i, wrapper, _i, _j, _len, _ref, _ref1;
+      var bar, col, div, fragment, i, wrapper, _i, _j, _len, _ref, _ref1;
       wrapper = document.createElement('div');
       fragment = document.createDocumentFragment();
       for (i = _i = 0, _ref = this.option.column; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
@@ -87,16 +78,16 @@ sounder.js License MIT
       this.wrapper.style.lineHeight = this.option.size[1] * 1.5 * this.option.maxHeight + 'px';
       _ref1 = this.bars;
       for (_j = 0, _len = _ref1.length; _j < _len; _j++) {
-        i = _ref1[_j];
-        i.style.display = 'inline-block';
-        i.style.verticalAlign = 'bottom';
+        bar = _ref1[_j];
+        bar.style.display = 'inline-block';
+        bar.style.verticalAlign = 'bottom';
       }
     };
 
     animation = function() {
       var _this;
       _this = this;
-      this.isAnimation = true;
+      this.isPlaying = true;
       (function() {
         var delay, loopAnime;
         delay = _this.option.speed;
@@ -158,7 +149,7 @@ sounder.js License MIT
     };
 
     function Sounder(option) {
-      this.option = _deepExtend({}, defaults, option);
+      this.option = _extend({}, defaults, option);
     }
 
     Sounder.prototype.create = function(output) {
@@ -171,7 +162,7 @@ sounder.js License MIT
     };
 
     Sounder.prototype.play = function(callback) {
-      if (this.isAnimation !== true) {
+      if (this.isPlaying !== true) {
         animation.call(this);
         if ((callback != null) && typeof callback === 'function') {
           callback();
@@ -181,10 +172,10 @@ sounder.js License MIT
     };
 
     Sounder.prototype.pause = function(callback) {
-      if (this.isAnimation === true) {
+      if (this.isPlaying === true) {
         clearTimeout(this.animeTimer);
         delete this.animeTimer;
-        this.isAnimation = false;
+        this.isPlaying = false;
         if ((callback != null) && typeof callback === 'function') {
           callback();
         }
@@ -193,7 +184,7 @@ sounder.js License MIT
     };
 
     Sounder.prototype.toggle = function(callback) {
-      if (this.isAnimation) {
+      if (this.isPlaying) {
         this.pause(callback);
       } else {
         this.play(callback);

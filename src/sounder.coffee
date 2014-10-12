@@ -1,47 +1,38 @@
 ###!
-sounder.js License MIT
+Sounder.js
+License MIT
 ###
 
 class Sounder
 
   # Static -------------------------------------------------
 
-  this.name = 'Sounder'
+  @name = 'Sounder'
 
-  this.getName = ->
-    return this.name
+  @getName = -> @name
 
 
 
   # Helper -------------------------------------------------
 
-  _isType = (type, obj) ->
-    clas = Object.prototype.toString.call(obj).slice(8, -1)
-    obj isnt undefined and obj isnt null and clas is type
-
-  _deepExtend = (out) ->
-    out = out || {}
+  _extend = (out) ->
+    out = out or {}
 
     for i in [1...arguments.length]
-      obj = arguments[i]
 
-      if not obj
+      if not arguments[i]
         continue
 
-      for key, val of obj
-        if obj.hasOwnProperty(key)
-          # if typeof val is 'object'
-          if _isType 'Object', val
-            _deepExtend out[key], val
-          else
-            out[key] = val
-    out
+      for key, val of arguments[i]
+        if arguments[i].hasOwnProperty key
+          out[key] = val
+    return out
 
   _getChildNode = (el) ->
     children = []
     for child in el.children
       children.push child if child.nodeType != 8
-    children
+    return children
 
 
 
@@ -99,16 +90,16 @@ class Sounder
     @wrapper.style.lineHeight =
       @option.size[1] * 1.5 * @option.maxHeight + 'px'
 
-    for i in @bars
-      i.style.display = 'inline-block'
-      i.style.verticalAlign = 'bottom'
+    for bar in @bars
+      bar.style.display = 'inline-block'
+      bar.style.verticalAlign = 'bottom'
 
     return
 
   animation = ->
     _this = @
 
-    @isAnimation = true
+    @isPlaying = true
 
     do ->
       delay = _this.option.speed
@@ -181,7 +172,7 @@ class Sounder
 
   constructor: (option) ->
 
-    @option = _deepExtend {}, defaults, option
+    @option = _extend {}, defaults, option
 
 
 
@@ -194,35 +185,35 @@ class Sounder
 
     if @option.autoPlay is true
       animation.call @
-    @
+    return @
 
   play: (callback) ->
-    if @isAnimation isnt true
+    if @isPlaying isnt true
       animation.call @
       if callback? and typeof callback is 'function'
         callback()
-    @
+    return @
 
   pause: (callback) ->
-    if @isAnimation is true
+    if @isPlaying is true
       clearTimeout @animeTimer
       delete @animeTimer
-      @isAnimation = false
+      @isPlaying = false
       if callback? and typeof callback is 'function'
         callback()
-    @
+    return @
 
   toggle: (callback) ->
-    if @isAnimation
+    if @isPlaying
       @pause callback
     else
       @play callback
-    @
+    return @
 
   reset: ->
     for bar in @bars
-      while(bar.childNodes[1])
+      while bar.childNodes[1]
         bar.removeChild bar.firstChild
-    @
+    return @
 
-window.Sounder = window.Sounder || Sounder
+window.Sounder = window.Sounder or Sounder
