@@ -5,7 +5,8 @@ License MIT
  */
 
 (function() {
-  var Sounder;
+  var Sounder,
+    __slice = [].slice;
 
   Sounder = (function() {
     var animation, barsAdjust, defaults, init, rendering, styling, tsumikiColor, _extend, _getChildNode;
@@ -183,11 +184,22 @@ License MIT
       return this;
     };
 
-    Sounder.prototype.toggle = function(callback) {
-      if (this.isPlaying) {
-        this.pause(callback);
+    Sounder.prototype.toggle = function() {
+      var callbacks;
+      callbacks = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      if (this.isPlaying !== true) {
+        this.play(callbacks[0]);
       } else {
-        this.play(callback);
+        this.pause(callbacks[1]);
+      }
+      return this;
+    };
+
+    Sounder.prototype.stop = function(callback) {
+      this.pause();
+      this.reset();
+      if ((callback != null) && typeof callback === 'function') {
+        callback();
       }
       return this;
     };

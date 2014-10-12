@@ -21,11 +21,11 @@ var sounder = new Sounder(),
 sounder.create(output);
 ```
 
-### Parameter
+### Config
 
-**`Sounder([ option ]);`**
+**`Sounder([ options ]);`**
 
-#### option.size
+#### options.size
 
 Piece size
 
@@ -33,7 +33,7 @@ Type: *Array*
 
 Default: `[20, 4]`
 
-#### option.color
+#### options.color
 
 Coloring
 
@@ -43,7 +43,7 @@ Type: *String*
 
 Default: `'#e74c3c'`
 
-#### option.column
+#### options.column
 
 Effect column length
 
@@ -51,7 +51,7 @@ Type: *Number*
 
 Default: `6`
 
-#### option.maxHeight
+#### options.maxHeight
 
 Effect max height length
 
@@ -59,7 +59,7 @@ Type: *Number*
 
 Default: `10`
 
-#### option.autoPlay
+#### options.autoPlay
 
 Effect auto playing
 
@@ -67,7 +67,7 @@ Type: *Boolean*
 
 Default: `false`
 
-#### option.speed
+#### options.speed
 
 Effect animation speed
 
@@ -81,7 +81,7 @@ Default: `60`
 
 Create and redering.
 
-#### DOMElement
+**DOMElement**
 
 Type: *Element*
 
@@ -89,31 +89,43 @@ Type: *Element*
 
 ### `.play( [callback] )`
 
-Animation play.
+Play.
 
 **Returns:** `this`
 
 ### `.pause( [callback] )`
 
-Animation pause.
+Pause.
 
 **Returns:** `this`
 
-### `.toggle( [callback] )`
+### `.toggle( [callback, callback] )`
 
 Toggles the state between play and pause.
+
+Function of the first argument is the callback function for play. next is pause.
+
+**Returns:** `this`
+
+### `.stop( [callback] )`
+
+Stop.
 
 **Returns:** `this`
 
 ### `.reset()`
 
-Effector reset.
+Effect counter reset.
 
 **Returns:** `this`
 
 ## Contributing
 
-Using gulp
+This library was developed with following things
+
+[gulp](http://gulpjs.com/)
+
+[CoffeeScript](http://coffeescript.org/)
 
 ```shell
 npm i
@@ -121,20 +133,9 @@ npm i
 
 ### `gulp`
 
-CoffeeScript compile, Live reload
-
 Default gulp task
 
-#### Tasks
-
-* `serve` `browserSync()`
-* `watch` `gulp.watch()`
-
-##### `gulp.watch` tasks
-
-* `notify` `plumber({errorHandler: notify.onError})`
-* `coffeelint` `coffeelint()`
-* `coffee` `coffee()`
+CoffeeScript compile, Live reloading
 
 ### `gulp patch`
 
@@ -142,19 +143,11 @@ Patch
 
 `package.json`, `bower.json` version property update.
 
-#### Tasks
-
-* `bump` `bump({type: 'patch'})`
-
 ### `gulp minor`
 
 Minor update
 
 `package.json`, `bower.json` version property update.
-
-#### Tasks
-
-* `bump` `bump({type: 'minor'})`
 
 ### `gulp major`
 
@@ -162,20 +155,9 @@ Major update
 
 `package.json`, `bower.json` version property update.
 
-#### Tasks
-
-* `bump` `bump({type: 'major'})`
-
 ### `gulp build`
 
 Build
-
-#### Tasks
-
-* `coffeelint()`
-* `coffee()`
-* `uglify()`
-* `rename()`
 
 ## Support browser
 

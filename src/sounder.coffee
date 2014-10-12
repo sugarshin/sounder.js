@@ -203,11 +203,18 @@ class Sounder
         callback()
     return @
 
-  toggle: (callback) ->
-    if @isPlaying
-      @pause callback
+  toggle: (callbacks...) ->
+    if @isPlaying isnt true
+      @play callbacks[0]
     else
-      @play callback
+      @pause callbacks[1]
+    return @
+
+  stop: (callback) ->
+    @pause()
+    @reset()
+    if callback? and typeof callback is 'function'
+      callback()
     return @
 
   reset: ->
