@@ -11,12 +11,6 @@ License MIT
   Sounder = (function() {
     var animation, barsAdjust, defaults, init, rendering, styling, tsumikiColor, _extend, _getChildNode;
 
-    Sounder.name = 'Sounder';
-
-    Sounder.getName = function() {
-      return this.name;
-    };
-
     _extend = function(out) {
       var i, key, val, _i, _ref, _ref1;
       out = out || {};
@@ -86,18 +80,15 @@ License MIT
     };
 
     animation = function() {
-      var _this;
-      _this = this;
+      var delay, doLoop;
       this.isPlaying = true;
-      (function() {
-        var delay, loopAnime;
-        delay = _this.option.speed;
-        loopAnime = function() {
+      delay = this.option.speed;
+      return (doLoop = (function(_this) {
+        return function() {
           barsAdjust.call(_this);
-          _this.animeTimer = setTimeout(loopAnime, delay);
+          return _this.animeTimer = setTimeout(doLoop, delay);
         };
-        setTimeout(loopAnime, delay);
-      })();
+      })(this))();
     };
 
     styling = function(target) {
@@ -105,33 +96,34 @@ License MIT
       styles = target.style;
       styles.width = this.option.size[0] + 'px';
       styles.height = this.option.size[1] + 'px';
-      styles.margin = '0 1px ' + Math.floor(this.option.size[1] / 2) + 'px';
+      styles.margin = "0 1px " + (Math.floor(this.option.size[1] / 2)) + "px";
       if (this.option.color === 'tsumiki') {
-        styles.background = tsumikiColor[Math.floor(Math.random() * 10)];
+        return styles.background = tsumikiColor[Math.floor(Math.random() * 10)];
       } else {
-        styles.background = this.option.color;
+        return styles.background = this.option.color;
       }
     };
 
     rendering = function(output) {
-      output.appendChild(this.wrapper);
+      return output.appendChild(this.wrapper);
     };
 
     barsAdjust = function() {
-      var bar, currentLength, doAddFragment, doAdjust, doRemoveFragment, _i, _len, _ref, _this;
-      _this = this;
+      var bar, currentLength, doAddFragment, doAdjust, doRemoveFragment, _i, _len, _ref;
       doAdjust = [];
-      doAddFragment = function(target) {
-        var div;
-        div = document.createElement('div');
-        div.className = 'fragment';
-        styling.call(_this, div);
-        target.insertBefore(div, target.firstChild);
-      };
+      doAddFragment = (function(_this) {
+        return function(target) {
+          var div;
+          div = document.createElement('div');
+          div.className = 'fragment';
+          styling.call(_this, div);
+          return target.insertBefore(div, target.firstChild);
+        };
+      })(this);
       doRemoveFragment = function(target) {
         var child;
         child = _getChildNode(target);
-        child[0].parentNode.removeChild(child[0]);
+        return child[0].parentNode.removeChild(child[0]);
       };
       doAdjust[0] = doAddFragment;
       doAdjust[1] = doRemoveFragment;
@@ -165,7 +157,7 @@ License MIT
     Sounder.prototype.play = function(callback) {
       if (this.isPlaying !== true) {
         animation.call(this);
-        if ((callback != null) && typeof callback === 'function') {
+        if (typeof callback === "function") {
           callback();
         }
       }
@@ -177,7 +169,7 @@ License MIT
         clearTimeout(this.animeTimer);
         delete this.animeTimer;
         this.isPlaying = false;
-        if ((callback != null) && typeof callback === 'function') {
+        if (typeof callback === "function") {
           callback();
         }
       }
@@ -198,7 +190,7 @@ License MIT
     Sounder.prototype.stop = function(callback) {
       this.pause();
       this.reset();
-      if ((callback != null) && typeof callback === 'function') {
+      if (typeof callback === "function") {
         callback();
       }
       return this;
@@ -220,6 +212,6 @@ License MIT
 
   })();
 
-  window.Sounder = window.Sounder || Sounder;
+  window.Sounder || (window.Sounder = Sounder);
 
 }).call(this);

@@ -5,14 +5,6 @@ License MIT
 
 class Sounder
 
-  # Static -------------------------------------------------
-
-  @name = 'Sounder'
-
-  @getName = -> @name
-
-
-
   # Helper -------------------------------------------------
 
   _extend = (out) ->
@@ -97,61 +89,41 @@ class Sounder
     return
 
   animation = ->
-    _this = @
-
     @isPlaying = true
-
-    do ->
-      delay = _this.option.speed
-
-      loopAnime = ->
-        barsAdjust.call _this
-
-        _this.animeTimer = setTimeout loopAnime, delay
-        return
-
-      setTimeout loopAnime, delay
-
-      return
-
-    return
+    delay = @option.speed
+    do doLoop = =>
+      barsAdjust.call @
+      @animeTimer = setTimeout doLoop, delay
 
   styling = (target) ->
     styles = target.style
 
     styles.width = @option.size[0] + 'px'
     styles.height = @option.size[1] + 'px'
-    styles.margin = '0 1px ' + Math.floor((@option.size[1] / 2)) + 'px'
+    styles.margin = "0 1px #{Math.floor(@option.size[1] / 2)}px"
 
     if @option.color is 'tsumiki'
-      styles.background = tsumikiColor[Math.floor Math.random() * 10]
+      styles.background = tsumikiColor[Math.floor(Math.random() * 10)]
     else
       styles.background = @option.color
-    return
 
-  rendering = (output) ->
-    output.appendChild @wrapper
-
-    return
+  rendering = (output) -> output.appendChild @wrapper
 
   barsAdjust = ->
-    _this = @
     doAdjust = []
 
-    doAddFragment = (target) ->
+    doAddFragment = (target) =>
       div = document.createElement 'div'
       div.className = 'fragment'
 
       # Styling piece
-      styling.call _this, div
+      styling.call @, div
 
       target.insertBefore div, target.firstChild
-      return
 
     doRemoveFragment = (target) ->
       child = _getChildNode target
       child[0].parentNode.removeChild child[0]
-      return
 
     doAdjust[0] = doAddFragment
     doAdjust[1] = doRemoveFragment
@@ -171,7 +143,6 @@ class Sounder
 
 
   constructor: (option) ->
-
     @option = _extend {}, defaults, option
 
 
@@ -185,42 +156,39 @@ class Sounder
 
     if @option.autoPlay is true
       animation.call @
-    return @
+    return this
 
   play: (callback) ->
     if @isPlaying isnt true
       animation.call @
-      if callback? and typeof callback is 'function'
-        callback()
-    return @
+      callback?()
+    return this
 
   pause: (callback) ->
     if @isPlaying is true
       clearTimeout @animeTimer
       delete @animeTimer
       @isPlaying = false
-      if callback? and typeof callback is 'function'
-        callback()
-    return @
+      callback?()
+    return this
 
   toggle: (callbacks...) ->
     if @isPlaying isnt true
       @play callbacks[0]
     else
       @pause callbacks[1]
-    return @
+    return this
 
   stop: (callback) ->
     @pause()
     @reset()
-    if callback? and typeof callback is 'function'
-      callback()
-    return @
+    callback?()
+    return this
 
   reset: ->
     for bar in @bars
       while bar.childNodes[1]
         bar.removeChild bar.firstChild
-    return @
+    return this
 
-window.Sounder = window.Sounder or Sounder
+window.Sounder or= Sounder
