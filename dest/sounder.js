@@ -9,7 +9,7 @@ License MIT
     __slice = [].slice;
 
   Sounder = (function() {
-    var animation, barsAdjust, defaults, init, rendering, styling, tsumikiColor, _extend, _getChildNode;
+    var animation, barsAdjust, defaults, init, rendering, styling, _extend, _getChildNode, _isArray;
 
     _extend = function(out) {
       var i, key, val, _i, _ref, _ref1;
@@ -42,6 +42,16 @@ License MIT
       return children;
     };
 
+    _isArray = function() {
+      if (Array.isArray) {
+        return Array.isArray;
+      } else {
+        return function(vArg) {
+          return Object.prototype.toString.call(vArg) === '[object Array]';
+        };
+      }
+    };
+
     defaults = {
       size: [20, 4],
       color: '#e74c3c',
@@ -50,8 +60,6 @@ License MIT
       autoPlay: false,
       speed: 60
     };
-
-    tsumikiColor = ['#23AAA4', '#5AB5B0', '#78BEB2', '#686F89', '#DC5D54', '#DD6664', '#D94142', '#E78E21', '#E9A21F', '#EDB51C'];
 
     init = function() {
       var bar, col, div, fragment, i, wrapper, _i, _j, _len, _ref, _ref1;
@@ -69,13 +77,11 @@ License MIT
       }
       this.wrapper = wrapper;
       this.bars = _getChildNode(wrapper);
-      this.wrapper.style.height = this.option.size[1] * 1.5 * this.option.maxHeight + 'px';
-      this.wrapper.style.lineHeight = this.option.size[1] * 1.5 * this.option.maxHeight + 'px';
+      this.wrapper.style.cssText = "height: " + (this.option.size[1] * 1.5 * this.option.maxHeight) + "px; line-height: " + (this.option.size[1] * 1.5 * this.option.maxHeight) + "px;";
       _ref1 = this.bars;
       for (_j = 0, _len = _ref1.length; _j < _len; _j++) {
         bar = _ref1[_j];
-        bar.style.display = 'inline-block';
-        bar.style.verticalAlign = 'bottom';
+        bar.style.cssText = "display: inline-block; vertical-align: bottom;";
       }
     };
 
@@ -92,15 +98,13 @@ License MIT
     };
 
     styling = function(target) {
-      var styles;
-      styles = target.style;
-      styles.width = this.option.size[0] + 'px';
-      styles.height = this.option.size[1] + 'px';
-      styles.margin = "0 1px " + (Math.floor(this.option.size[1] / 2)) + "px";
-      if (this.option.color === 'tsumiki') {
-        return styles.background = tsumikiColor[Math.floor(Math.random() * 10)];
+      var len;
+      target.style.cssText = "width: " + this.option.size[0] + "px; height: " + this.option.size[1] + "px; margin: 0 1px " + (Math.floor(this.option.size[1] / 2)) + "px;";
+      if (_isArray(this.option.color)) {
+        len = this.option.color.length;
+        return target.style.cssText += "background: " + this.option.color[Math.floor(Math.random() * len)];
       } else {
-        return styles.background = this.option.color;
+        return target.style.cssText += "background: " + this.option.color;
       }
     };
 

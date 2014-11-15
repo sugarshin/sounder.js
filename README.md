@@ -37,9 +37,9 @@ Default: `[20, 4]`
 
 Coloring
 
-Support `'tsumiki'` coloring.
+If specify Array, will be chosen at random
 
-Type: *String*
+Type: *String or Array*
 
 Default: `'#e74c3c'`
 
