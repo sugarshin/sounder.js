@@ -21,7 +21,7 @@ class Sounder
       children.push child if child.nodeType != 8
     return children
 
-  _isArray = ->
+  _isArray = do ->
     if Array.isArray
       return Array.isArray
     else

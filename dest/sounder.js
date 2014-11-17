@@ -42,7 +42,7 @@ License MIT
       return children;
     };
 
-    _isArray = function() {
+    _isArray = (function() {
       if (Array.isArray) {
         return Array.isArray;
       } else {
@@ -50,7 +50,7 @@ License MIT
           return Object.prototype.toString.call(vArg) === '[object Array]';
         };
       }
-    };
+    })();
 
     defaults = {
       size: [20, 4],
