@@ -28,6 +28,9 @@ class Sounder
       return (vArg) ->
         Object.prototype.toString.call(vArg) is '[object Array]'
 
+  _getRandomInt = (min, max) ->
+    return Math.floor(Math.random() * (max - min + 1)) + min
+
 
 
   # Private prop -------------------------------------------
@@ -85,6 +88,7 @@ class Sounder
       @animeTimer = setTimeout doLoop, delay
 
   styling = (target) ->
+    # marginは修正するかも
     target.style.cssText = "
       width: #{@option.size[0]}px;
       height: #{@option.size[1]}px;
@@ -92,9 +96,9 @@ class Sounder
     "
 
     if _isArray @option.color
-      len = @option.color.length
+      len = @option.color.length - 1
       target.style.cssText += "
-        background: #{@option.color[Math.floor(Math.random() * len)]}
+        background: #{@option.color[_getRandomInt(0, len)]}
       "
     else
       target.style.cssText += "
@@ -103,36 +107,33 @@ class Sounder
 
   rendering = (output) -> output.appendChild @wrapper
 
-  barsAdjust = ->
+  doAddFragment = (target) ->
+    div = document.createElement 'div'
+    div.className = 'fragment'
+
+    # Styling piece
+    styling.call @, div
+
+    target.insertBefore div, target.firstChild
+
+  doRemoveFragment = (target) ->
+    child = _getChildNode target
+    child[0].parentNode.removeChild child[0]
+
+  barsAdjust = do ->
     doAdjust = []
-
-    doAddFragment = (target) =>
-      div = document.createElement 'div'
-      div.className = 'fragment'
-
-      # Styling piece
-      styling.call @, div
-
-      target.insertBefore div, target.firstChild
-
-    doRemoveFragment = (target) ->
-      child = _getChildNode target
-      child[0].parentNode.removeChild child[0]
-
     doAdjust[0] = doAddFragment
     doAdjust[1] = doRemoveFragment
 
-    for bar in @bars
-      currentLength = _getChildNode(bar).length
-
-      if currentLength is 1
-        doAddFragment bar
-      else if currentLength is @option.maxHeight
-        doRemoveFragment bar
-      else
-        doAdjust[Math.floor(Math.random() * 2)] bar
-
-    return
+    return ->
+      for bar in @bars
+        currentLength = _getChildNode(bar).length
+        if currentLength is 1
+          doAddFragment.call @, bar
+        else if currentLength is @option.maxHeight
+          doRemoveFragment.call @, bar
+        else
+          doAdjust[_getRandomInt(0, 1)].call @, bar
 
 
 

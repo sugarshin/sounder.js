@@ -9,7 +9,7 @@ License MIT
     __slice = [].slice;
 
   Sounder = (function() {
-    var animation, barsAdjust, defaults, init, rendering, styling, _extend, _getChildNode, _isArray;
+    var animation, barsAdjust, defaults, doAddFragment, doRemoveFragment, init, rendering, styling, _extend, _getChildNode, _getRandomInt, _isArray;
 
     _extend = function(out) {
       var i, key, val, _i, _ref, _ref1;
@@ -51,6 +51,10 @@ License MIT
         };
       }
     })();
+
+    _getRandomInt = function(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
 
     defaults = {
       size: [20, 4],
@@ -101,8 +105,8 @@ License MIT
       var len;
       target.style.cssText = "width: " + this.option.size[0] + "px; height: " + this.option.size[1] + "px; margin: 0 1px " + (Math.floor(this.option.size[1] / 2)) + "px;";
       if (_isArray(this.option.color)) {
-        len = this.option.color.length;
-        return target.style.cssText += "background: " + this.option.color[Math.floor(Math.random() * len)];
+        len = this.option.color.length - 1;
+        return target.style.cssText += "background: " + this.option.color[_getRandomInt(0, len)];
       } else {
         return target.style.cssText += "background: " + this.option.color;
       }
@@ -112,38 +116,43 @@ License MIT
       return output.appendChild(this.wrapper);
     };
 
-    barsAdjust = function() {
-      var bar, currentLength, doAddFragment, doAdjust, doRemoveFragment, _i, _len, _ref;
+    doAddFragment = function(target) {
+      var div;
+      div = document.createElement('div');
+      div.className = 'fragment';
+      styling.call(this, div);
+      return target.insertBefore(div, target.firstChild);
+    };
+
+    doRemoveFragment = function(target) {
+      var child;
+      child = _getChildNode(target);
+      return child[0].parentNode.removeChild(child[0]);
+    };
+
+    barsAdjust = (function() {
+      var doAdjust;
       doAdjust = [];
-      doAddFragment = (function(_this) {
-        return function(target) {
-          var div;
-          div = document.createElement('div');
-          div.className = 'fragment';
-          styling.call(_this, div);
-          return target.insertBefore(div, target.firstChild);
-        };
-      })(this);
-      doRemoveFragment = function(target) {
-        var child;
-        child = _getChildNode(target);
-        return child[0].parentNode.removeChild(child[0]);
-      };
       doAdjust[0] = doAddFragment;
       doAdjust[1] = doRemoveFragment;
-      _ref = this.bars;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        bar = _ref[_i];
-        currentLength = _getChildNode(bar).length;
-        if (currentLength === 1) {
-          doAddFragment(bar);
-        } else if (currentLength === this.option.maxHeight) {
-          doRemoveFragment(bar);
-        } else {
-          doAdjust[Math.floor(Math.random() * 2)](bar);
+      return function() {
+        var bar, currentLength, _i, _len, _ref, _results;
+        _ref = this.bars;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          bar = _ref[_i];
+          currentLength = _getChildNode(bar).length;
+          if (currentLength === 1) {
+            _results.push(doAddFragment.call(this, bar));
+          } else if (currentLength === this.option.maxHeight) {
+            _results.push(doRemoveFragment.call(this, bar));
+          } else {
+            _results.push(doAdjust[_getRandomInt(0, 1)].call(this, bar));
+          }
         }
-      }
-    };
+        return _results;
+      };
+    })();
 
     function Sounder(option) {
       this.option = _extend({}, defaults, option);
