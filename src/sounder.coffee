@@ -31,9 +31,29 @@ class Sounder
   _getRandomInt = (min, max) ->
     return Math.floor(Math.random() * (max - min + 1)) + min
 
+  _requestAnimeFrame = do ->
+    return (
+      window.requestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.oRequestAnimationFrame ||
+      window.msRequestAnimationFrame ||
+      (callback) ->
+        return window.setTimeout callback, 1000 / 60
+    )
+
+  _cancelAnimeFrame = do ->
+    return (
+      window.cancelAnimationFrame ||
+      window.webkitCancelAnimationFrame ||
+      window.mozCancelAnimationFrame ||
+      window.oCancelAnimationFrame ||
+      window.msCancelAnimationFrame ||
+      (id) -> window.clearTimeout id
+    )
 
 
-  # Private prop -------------------------------------------
+
   defaults =
     size: [20, 4]
     color: '#e74c3c'
@@ -82,28 +102,29 @@ class Sounder
 
   animation = ->
     @isPlaying = true
-    delay = @option.speed
-    do doLoop = =>
-      barsAdjust.call @
-      @animeTimer = setTimeout doLoop, delay
+    start = new Date().getTime()
+    do anime = =>
+      @animeTimer = _requestAnimeFrame anime
+      last = new Date().getTime()
+      if last - start >= 100 - @option.speed
+        barsAdjust.call @
+        start = new Date().getTime()
 
   styling = (target) ->
+    # IE8 で style.cssText による参照再代入ができない
+    if _isArray @option.color
+      len = @option.color.length - 1
+      backgroundColor = @option.color[_getRandomInt(0, len)]
+    else
+      backgroundColor = @option.color
+
     # marginは修正するかも
     target.style.cssText = "
       width: #{@option.size[0]}px;
       height: #{@option.size[1]}px;
       margin: 0 1px #{Math.floor(@option.size[1] / 2)}px;
+      background: #{backgroundColor}
     "
-
-    if _isArray @option.color
-      len = @option.color.length - 1
-      target.style.cssText += "
-        background: #{@option.color[_getRandomInt(0, len)]}
-      "
-    else
-      target.style.cssText += "
-        background: #{@option.color}
-      "
 
   rendering = (output) -> output.appendChild @wrapper
 
@@ -160,8 +181,7 @@ class Sounder
 
   pause: (callback) ->
     if @isPlaying is true
-      clearTimeout @animeTimer
-      delete @animeTimer
+      _cancelAnimeFrame @animeTimer
       @isPlaying = false
       callback?()
     return this

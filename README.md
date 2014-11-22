@@ -69,7 +69,7 @@ Default: `false`
 
 #### options.speed
 
-Effect animation speed
+fps
 
 Type: *Number*
 

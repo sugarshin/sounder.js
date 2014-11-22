@@ -9,7 +9,7 @@ License MIT
     __slice = [].slice;
 
   Sounder = (function() {
-    var animation, barsAdjust, defaults, doAddFragment, doRemoveFragment, init, rendering, styling, _extend, _getChildNode, _getRandomInt, _isArray;
+    var animation, barsAdjust, defaults, doAddFragment, doRemoveFragment, init, rendering, styling, _cancelAnimeFrame, _extend, _getChildNode, _getRandomInt, _isArray, _requestAnimeFrame;
 
     _extend = function(out) {
       var i, key, val, _i, _ref, _ref1;
@@ -56,6 +56,18 @@ License MIT
       return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
+    _requestAnimeFrame = (function() {
+      return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback) {
+        return window.setTimeout(callback, 1000 / 60);
+      };
+    })();
+
+    _cancelAnimeFrame = (function() {
+      return window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame || window.oCancelAnimationFrame || window.msCancelAnimationFrame || function(id) {
+        return window.clearTimeout(id);
+      };
+    })();
+
     defaults = {
       size: [20, 4],
       color: '#e74c3c',
@@ -90,26 +102,31 @@ License MIT
     };
 
     animation = function() {
-      var delay, doLoop;
+      var anime, start;
       this.isPlaying = true;
-      delay = this.option.speed;
-      return (doLoop = (function(_this) {
+      start = new Date().getTime();
+      return (anime = (function(_this) {
         return function() {
-          barsAdjust.call(_this);
-          return _this.animeTimer = setTimeout(doLoop, delay);
+          var last;
+          _this.animeTimer = _requestAnimeFrame(anime);
+          last = new Date().getTime();
+          if (last - start >= 100 - _this.option.speed) {
+            barsAdjust.call(_this);
+            return start = new Date().getTime();
+          }
         };
       })(this))();
     };
 
     styling = function(target) {
-      var len;
-      target.style.cssText = "width: " + this.option.size[0] + "px; height: " + this.option.size[1] + "px; margin: 0 1px " + (Math.floor(this.option.size[1] / 2)) + "px;";
+      var backgroundColor, len;
       if (_isArray(this.option.color)) {
         len = this.option.color.length - 1;
-        return target.style.cssText += "background: " + this.option.color[_getRandomInt(0, len)];
+        backgroundColor = this.option.color[_getRandomInt(0, len)];
       } else {
-        return target.style.cssText += "background: " + this.option.color;
+        backgroundColor = this.option.color;
       }
+      return target.style.cssText = "width: " + this.option.size[0] + "px; height: " + this.option.size[1] + "px; margin: 0 1px " + (Math.floor(this.option.size[1] / 2)) + "px; background: " + backgroundColor;
     };
 
     rendering = function(output) {
@@ -179,8 +196,7 @@ License MIT
 
     Sounder.prototype.pause = function(callback) {
       if (this.isPlaying === true) {
-        clearTimeout(this.animeTimer);
-        delete this.animeTimer;
+        _cancelAnimeFrame(this.animeTimer);
         this.isPlaying = false;
         if (typeof callback === "function") {
           callback();

@@ -24,9 +24,7 @@ gulp.task 'serve', ->
       index: 'demo/index.html'
   )
 
-gulp.task 'default', ['serve'], ->
-  gulp.watch ['src/sounder.coffee'], ['coffee', browserSync.reload]
-  return
+gulp.task 'default', ['serve'], -> gulp.watch ['src/sounder.coffee'], ['coffee', browserSync.reload]
 
 gulp.task 'major', ->
   gulp.src './*.json'
@@ -34,7 +32,6 @@ gulp.task 'major', ->
       type: 'major'
     )
     .pipe gulp.dest('./')
-  return
 
 gulp.task 'minor', ->
   gulp.src './*.json'
@@ -42,7 +39,6 @@ gulp.task 'minor', ->
       type: 'minor'
     )
     .pipe gulp.dest('./')
-  return
 
 gulp.task 'patch', ->
   gulp.src './*.json'
@@ -50,7 +46,6 @@ gulp.task 'patch', ->
       type: 'patch'
     )
     .pipe gulp.dest('./')
-  return
 
 gulp.task 'build', ->
   gulp.src 'src/sounder.coffee'
@@ -63,4 +58,3 @@ gulp.task 'build', ->
       extname: '.min.js'
     )
     .pipe gulp.dest('dest/')
-  return
