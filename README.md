@@ -4,7 +4,7 @@ Sound effector small JavaScript library.
 
 ## Demo
 
-[https://tsumikiinc.github.io/sounder.js/demo/](https://tsumikiinc.github.io/sounder.js/demo/)
+[https://sugarshin.github.io/sounder.js/demo/](https://sugarshin.github.io/sounder.js/demo/)
 
 ## Quickstart
 
@@ -166,7 +166,5 @@ Modern browser and IE8+
 ## License
 
 MIT
-
-© Tsumiki inc.
 
 © sugarshin

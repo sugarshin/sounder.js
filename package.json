@@ -2,8 +2,8 @@
   "name": "sounder.js",
   "version": "0.9.2",
   "description": "Sound effector small JavaScript library",
-  "repository": "git@github.com:tsumikiinc/sounder.js.git",
-  "author": "sato",
+  "repository": "git@github.com:sugarshin/sounder.js.git",
+  "author": "sugarshin",
   "license": "MIT",
   "devDependencies": {
     "browser-sync": "^1.5.1",

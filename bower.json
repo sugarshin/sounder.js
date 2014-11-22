@@ -1,9 +1,9 @@
 {
   "name": "sounder.js",
   "version": "0.9.2",
-  "homepage": "https://github.com/tsumikiinc/sounder.js",
+  "homepage": "https://github.com/sugarshin/sounder.js",
   "authors": [
-    "sato <sato@tsumikiinc.com>"
+    "sugarshin <shinsugar@gmail.com>"
   ],
   "description": "Sound effector small JavaScript library",
   "main": "dest/sounder.js",
