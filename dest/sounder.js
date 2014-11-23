@@ -9,7 +9,7 @@ License MIT
     __slice = [].slice;
 
   Sounder = (function() {
-    var animation, barsAdjust, defaults, doAddFragment, doRemoveFragment, init, render, styling, _cancelAnimeFrame, _extend, _getChildNode, _getRandomInt, _isArray, _requestAnimeFrame;
+    var addFragment, animation, barsAdjust, defaults, init, render, rmFragment, styling, _cancelAnimeFrame, _extend, _getChildNode, _getRandomInt, _isArray, _requestAnimeFrame;
 
     _extend = function(out) {
       var i, key, val, _i, _ref, _ref1;
@@ -78,18 +78,17 @@ License MIT
     };
 
     init = function() {
-      var bar, col, div, fragment, i, wrapper, _i, _j, _len, _ref, _ref1;
+      var bar, col, colFragment, i, piece, wrapper, _i, _j, _len, _ref, _ref1;
       wrapper = document.createElement('div');
-      fragment = document.createDocumentFragment();
       for (i = _i = 0, _ref = this.option.column; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        colFragment = document.createDocumentFragment();
         col = document.createElement('div');
-        div = document.createElement('div');
-        div.className = 'fragment';
-        styling.call(this, div);
-        fragment.appendChild(div);
-        col.className = 'col';
-        col.appendChild(fragment);
-        wrapper.appendChild(col);
+        piece = document.createElement('div');
+        piece.className = 'sounder-fragment';
+        styling.call(this, piece);
+        col.appendChild(piece);
+        colFragment.appendChild(col);
+        wrapper.appendChild(colFragment);
       }
       this.bars = _getChildNode(wrapper);
       _ref1 = this.bars;
@@ -126,14 +125,14 @@ License MIT
       } else {
         backgroundColor = this.option.color;
       }
-      return target.style.cssText = "width: " + this.option.size[0] + "px; height: " + this.option.size[1] + "px; margin: 0 1px " + (Math.floor(this.option.size[1] / 2)) + "px; background: " + backgroundColor;
+      return target.style.cssText = "width: " + this.option.size[0] + "px; height: " + this.option.size[1] + "px; margin: 0 1px " + (Math.floor(this.option.size[1] / 2)) + "px; background: " + backgroundColor + ";";
     };
 
     render = function(output) {
       return output.appendChild(this.wrapper);
     };
 
-    doAddFragment = function(target) {
+    addFragment = function(target) {
       var div;
       div = document.createElement('div');
       div.className = 'fragment';
@@ -141,7 +140,7 @@ License MIT
       return target.insertBefore(div, target.firstChild);
     };
 
-    doRemoveFragment = function(target) {
+    rmFragment = function(target) {
       var child;
       child = _getChildNode(target);
       return child[0].parentNode.removeChild(child[0]);
@@ -150,8 +149,8 @@ License MIT
     barsAdjust = (function() {
       var doAdjust;
       doAdjust = [];
-      doAdjust[0] = doAddFragment;
-      doAdjust[1] = doRemoveFragment;
+      doAdjust[0] = addFragment;
+      doAdjust[1] = rmFragment;
       return function() {
         var bar, currentLength, _i, _len, _ref, _results;
         _ref = this.bars;
@@ -160,9 +159,9 @@ License MIT
           bar = _ref[_i];
           currentLength = _getChildNode(bar).length;
           if (currentLength === 1) {
-            _results.push(doAddFragment.call(this, bar));
+            _results.push(addFragment.call(this, bar));
           } else if (currentLength === this.option.maxHeight) {
-            _results.push(doRemoveFragment.call(this, bar));
+            _results.push(rmFragment.call(this, bar));
           } else {
             _results.push(doAdjust[_getRandomInt(0, 1)].call(this, bar));
           }
@@ -185,7 +184,7 @@ License MIT
     };
 
     Sounder.prototype.play = function(callback) {
-      if (this.isPlaying === false) {
+      if (this.isPlaying !== true) {
         animation.call(this);
         if (typeof callback === "function") {
           callback();
@@ -208,7 +207,7 @@ License MIT
     Sounder.prototype.toggle = function() {
       var callbacks;
       callbacks = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      if (this.isPlaying === false) {
+      if (this.isPlaying !== true) {
         this.play(callbacks[0]);
       } else {
         this.pause(callbacks[1]);

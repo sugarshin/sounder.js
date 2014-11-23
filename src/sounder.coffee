@@ -69,23 +69,19 @@ class Sounder
   init = ->
     wrapper = document.createElement 'div'
 
-    fragment = document.createDocumentFragment()
-
     for i in [0...@option.column]
+      colFragment = document.createDocumentFragment()
       col = document.createElement 'div'
-      div = document.createElement 'div'
-      div.className = 'fragment'
-
+      piece = document.createElement 'div'
+      piece.className = 'sounder-fragment'
       # Styling piece
-      styling.call @, div
+      styling.call @, piece
 
-      fragment.appendChild div
-      col.className = 'col'
-      col.appendChild fragment
-      wrapper.appendChild col
+      col.appendChild piece
+      colFragment.appendChild col
+      wrapper.appendChild colFragment
 
     @bars = _getChildNode wrapper
-
     for bar in @bars
       bar.style.cssText = "
         display: inline-block;
@@ -93,7 +89,6 @@ class Sounder
       "
 
     @wrapper = wrapper
-
     @wrapper.style.cssText = "
       height: #{@option.size[1] * 1.5 * @option.maxHeight}px;
       line-height: #{@option.size[1] * 1.5 * @option.maxHeight}px;
@@ -122,12 +117,12 @@ class Sounder
       width: #{@option.size[0]}px;
       height: #{@option.size[1]}px;
       margin: 0 1px #{Math.floor(@option.size[1] / 2)}px;
-      background: #{backgroundColor}
+      background: #{backgroundColor};
     "
 
   render = (output) -> output.appendChild @wrapper
 
-  doAddFragment = (target) ->
+  addFragment = (target) ->
     div = document.createElement 'div'
     div.className = 'fragment'
 
@@ -136,22 +131,22 @@ class Sounder
 
     target.insertBefore div, target.firstChild
 
-  doRemoveFragment = (target) ->
+  rmFragment = (target) ->
     child = _getChildNode target
     child[0].parentNode.removeChild child[0]
 
   barsAdjust = do ->
     doAdjust = []
-    doAdjust[0] = doAddFragment
-    doAdjust[1] = doRemoveFragment
+    doAdjust[0] = addFragment
+    doAdjust[1] = rmFragment
 
     return ->
       for bar in @bars
         currentLength = _getChildNode(bar).length
         if currentLength is 1
-          doAddFragment.call @, bar
+          addFragment.call @, bar
         else if currentLength is @option.maxHeight
-          doRemoveFragment.call @, bar
+          rmFragment.call @, bar
         else
           doAdjust[_getRandomInt(0, 1)].call @, bar
 
@@ -173,7 +168,7 @@ class Sounder
     return this
 
   play: (callback) ->
-    if @isPlaying is false
+    if @isPlaying isnt true
       animation.call @
       callback?()
     return this
@@ -186,7 +181,7 @@ class Sounder
     return this
 
   toggle: (callbacks...) ->
-    if @isPlaying is false
+    if @isPlaying isnt true
       @play callbacks[0]
     else
       @pause callbacks[1]
