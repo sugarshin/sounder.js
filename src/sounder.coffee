@@ -26,7 +26,7 @@ class Sounder
       return Array.isArray
     else
       return (vArg) ->
-        Object.prototype.toString.call(vArg) is '[object Array]'
+        return Object.prototype.toString.call(vArg) is '[object Array]'
 
   _getRandomInt = (min, max) ->
     return Math.floor(Math.random() * (max - min + 1)) + min
@@ -36,8 +36,8 @@ class Sounder
       window.requestAnimationFrame ||
       window.webkitRequestAnimationFrame ||
       window.mozRequestAnimationFrame ||
-      window.oRequestAnimationFrame ||
       window.msRequestAnimationFrame ||
+      window.oRequestAnimationFrame ||
       (callback) ->
         return window.setTimeout callback, 1000 / 60
     )
@@ -47,9 +47,10 @@ class Sounder
       window.cancelAnimationFrame ||
       window.webkitCancelAnimationFrame ||
       window.mozCancelAnimationFrame ||
-      window.oCancelAnimationFrame ||
       window.msCancelAnimationFrame ||
-      (id) -> window.clearTimeout id
+      window.oCancelAnimationFrame ||
+      (id) ->
+        return window.clearTimeout id
     )
 
 
@@ -83,14 +84,7 @@ class Sounder
       col.appendChild fragment
       wrapper.appendChild col
 
-    @wrapper = wrapper
-
     @bars = _getChildNode wrapper
-
-    @wrapper.style.cssText = "
-      height: #{@option.size[1] * 1.5 * @option.maxHeight}px;
-      line-height: #{@option.size[1] * 1.5 * @option.maxHeight}px;
-    "
 
     for bar in @bars
       bar.style.cssText = "
@@ -98,7 +92,12 @@ class Sounder
         vertical-align: bottom;
       "
 
-    return
+    @wrapper = wrapper
+
+    @wrapper.style.cssText = "
+      height: #{@option.size[1] * 1.5 * @option.maxHeight}px;
+      line-height: #{@option.size[1] * 1.5 * @option.maxHeight}px;
+    "
 
   animation = ->
     @isPlaying = true
@@ -126,7 +125,7 @@ class Sounder
       background: #{backgroundColor}
     "
 
-  rendering = (output) -> output.appendChild @wrapper
+  render = (output) -> output.appendChild @wrapper
 
   doAddFragment = (target) ->
     div = document.createElement 'div'
@@ -167,14 +166,14 @@ class Sounder
   create: (output) ->
     init.call @
 
-    rendering.call @, output
+    render.call @, output
 
     if @option.autoPlay is true
       animation.call @
     return this
 
   play: (callback) ->
-    if @isPlaying isnt true
+    if @isPlaying is false
       animation.call @
       callback?()
     return this
@@ -187,7 +186,7 @@ class Sounder
     return this
 
   toggle: (callbacks...) ->
-    if @isPlaying isnt true
+    if @isPlaying is false
       @play callbacks[0]
     else
       @pause callbacks[1]

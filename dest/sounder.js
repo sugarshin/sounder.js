@@ -9,7 +9,7 @@ License MIT
     __slice = [].slice;
 
   Sounder = (function() {
-    var animation, barsAdjust, defaults, doAddFragment, doRemoveFragment, init, rendering, styling, _cancelAnimeFrame, _extend, _getChildNode, _getRandomInt, _isArray, _requestAnimeFrame;
+    var animation, barsAdjust, defaults, doAddFragment, doRemoveFragment, init, render, styling, _cancelAnimeFrame, _extend, _getChildNode, _getRandomInt, _isArray, _requestAnimeFrame;
 
     _extend = function(out) {
       var i, key, val, _i, _ref, _ref1;
@@ -57,13 +57,13 @@ License MIT
     };
 
     _requestAnimeFrame = (function() {
-      return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback) {
+      return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || window.oRequestAnimationFrame || function(callback) {
         return window.setTimeout(callback, 1000 / 60);
       };
     })();
 
     _cancelAnimeFrame = (function() {
-      return window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame || window.oCancelAnimationFrame || window.msCancelAnimationFrame || function(id) {
+      return window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame || window.msCancelAnimationFrame || window.oCancelAnimationFrame || function(id) {
         return window.clearTimeout(id);
       };
     })();
@@ -91,14 +91,14 @@ License MIT
         col.appendChild(fragment);
         wrapper.appendChild(col);
       }
-      this.wrapper = wrapper;
       this.bars = _getChildNode(wrapper);
-      this.wrapper.style.cssText = "height: " + (this.option.size[1] * 1.5 * this.option.maxHeight) + "px; line-height: " + (this.option.size[1] * 1.5 * this.option.maxHeight) + "px;";
       _ref1 = this.bars;
       for (_j = 0, _len = _ref1.length; _j < _len; _j++) {
         bar = _ref1[_j];
         bar.style.cssText = "display: inline-block; vertical-align: bottom;";
       }
+      this.wrapper = wrapper;
+      return this.wrapper.style.cssText = "height: " + (this.option.size[1] * 1.5 * this.option.maxHeight) + "px; line-height: " + (this.option.size[1] * 1.5 * this.option.maxHeight) + "px;";
     };
 
     animation = function() {
@@ -129,7 +129,7 @@ License MIT
       return target.style.cssText = "width: " + this.option.size[0] + "px; height: " + this.option.size[1] + "px; margin: 0 1px " + (Math.floor(this.option.size[1] / 2)) + "px; background: " + backgroundColor;
     };
 
-    rendering = function(output) {
+    render = function(output) {
       return output.appendChild(this.wrapper);
     };
 
@@ -177,7 +177,7 @@ License MIT
 
     Sounder.prototype.create = function(output) {
       init.call(this);
-      rendering.call(this, output);
+      render.call(this, output);
       if (this.option.autoPlay === true) {
         animation.call(this);
       }
@@ -185,7 +185,7 @@ License MIT
     };
 
     Sounder.prototype.play = function(callback) {
-      if (this.isPlaying !== true) {
+      if (this.isPlaying === false) {
         animation.call(this);
         if (typeof callback === "function") {
           callback();
@@ -208,7 +208,7 @@ License MIT
     Sounder.prototype.toggle = function() {
       var callbacks;
       callbacks = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      if (this.isPlaying !== true) {
+      if (this.isPlaying === false) {
         this.play(callbacks[0]);
       } else {
         this.pause(callbacks[1]);
