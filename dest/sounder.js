@@ -1,9 +1,8 @@
-
 /*!
-Sounder.js
-License MIT
+ * @license sounder.js v0.10.2
+ * (c) 2014 sugarshin https://github.com/sugarshin
+ * License: MIT
  */
-
 (function() {
   var Sounder,
     __slice = [].slice;
@@ -102,12 +101,12 @@ License MIT
 
     animation = function() {
       var anime, start;
-      this.isPlaying = true;
+      this._isPlaying = true;
       start = new Date().getTime();
       return (anime = (function(_this) {
         return function() {
           var last;
-          _this.animeTimer = _requestAnimeFrame(anime);
+          _this._timerID = _requestAnimeFrame(anime);
           last = new Date().getTime();
           if (last - start >= 100 - _this.option.speed) {
             barsAdjust.call(_this);
@@ -184,7 +183,7 @@ License MIT
     };
 
     Sounder.prototype.play = function(callback) {
-      if (this.isPlaying !== true) {
+      if (this._isPlaying !== true) {
         animation.call(this);
         if (typeof callback === "function") {
           callback();
@@ -194,9 +193,9 @@ License MIT
     };
 
     Sounder.prototype.pause = function(callback) {
-      if (this.isPlaying === true) {
-        _cancelAnimeFrame(this.animeTimer);
-        this.isPlaying = false;
+      if (this._isPlaying === true) {
+        _cancelAnimeFrame(this._timerID);
+        this._isPlaying = false;
         if (typeof callback === "function") {
           callback();
         }
@@ -207,7 +206,7 @@ License MIT
     Sounder.prototype.toggle = function() {
       var callbacks;
       callbacks = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      if (this.isPlaying !== true) {
+      if (this._isPlaying !== true) {
         this.play(callbacks[0]);
       } else {
         this.pause(callbacks[1]);

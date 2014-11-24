@@ -1,8 +1,3 @@
-###!
-Sounder.js
-License MIT
-###
-
 class Sounder
 
   # Helper -------------------------------------------------
@@ -95,10 +90,10 @@ class Sounder
     "
 
   animation = ->
-    @isPlaying = true
+    @_isPlaying = true
     start = new Date().getTime()
     do anime = =>
-      @animeTimer = _requestAnimeFrame anime
+      @_timerID = _requestAnimeFrame anime
       last = new Date().getTime()
       if last - start >= 100 - @option.speed
         barsAdjust.call @
@@ -168,20 +163,20 @@ class Sounder
     return this
 
   play: (callback) ->
-    if @isPlaying isnt true
+    if @_isPlaying isnt true
       animation.call @
       callback?()
     return this
 
   pause: (callback) ->
-    if @isPlaying is true
-      _cancelAnimeFrame @animeTimer
-      @isPlaying = false
+    if @_isPlaying is true
+      _cancelAnimeFrame @_timerID
+      @_isPlaying = false
       callback?()
     return this
 
   toggle: (callbacks...) ->
-    if @isPlaying isnt true
+    if @_isPlaying isnt true
       @play callbacks[0]
     else
       @pause callbacks[1]
