@@ -119,7 +119,7 @@ class Sounder
 
   addFragment = (target) ->
     div = document.createElement 'div'
-    div.className = 'fragment'
+    div.className = 'sounder-fragment'
 
     # Styling piece
     styling.call @, div

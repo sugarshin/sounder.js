@@ -1,5 +1,5 @@
 /*!
- * @license sounder.js v0.10.2
+ * @license sounder.js v0.10.3
  * (c) 2014 sugarshin https://github.com/sugarshin
  * License: MIT
  */
@@ -134,7 +134,7 @@
     addFragment = function(target) {
       var div;
       div = document.createElement('div');
-      div.className = 'fragment';
+      div.className = 'sounder-fragment';
       styling.call(this, div);
       return target.insertBefore(div, target.firstChild);
     };
