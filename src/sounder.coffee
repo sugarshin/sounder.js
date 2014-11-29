@@ -48,6 +48,8 @@ class Sounder
         return window.clearTimeout id
     )
 
+  _remove = (el) -> el.parentNode.removeChild el
+
 
 
   defaults =
@@ -63,30 +65,33 @@ class Sounder
   # Private method -----------------------------------------
   init = ->
     wrapper = document.createElement 'div'
+    wrapper.className = 'sounder-wrapper'
 
-    for i in [0...@option.column]
-      colFragment = document.createDocumentFragment()
+    colFragment = document.createDocumentFragment()
+    for i in [0...@options.column]
       col = document.createElement 'div'
+      col.className = 'sounder-col'
+
       piece = document.createElement 'div'
       piece.className = 'sounder-fragment'
-      # Styling piece
-      styling.call @, piece
+      stylingPiece.call @, piece
 
       col.appendChild piece
       colFragment.appendChild col
-      wrapper.appendChild colFragment
 
-    @bars = _getChildNode wrapper
-    for bar in @bars
+    wrapper.appendChild colFragment
+
+    @_bars = _getChildNode wrapper
+    for bar in @_bars
       bar.style.cssText = "
         display: inline-block;
         vertical-align: bottom;
       "
 
-    @wrapper = wrapper
-    @wrapper.style.cssText = "
-      height: #{@option.size[1] * 1.5 * @option.maxHeight}px;
-      line-height: #{@option.size[1] * 1.5 * @option.maxHeight}px;
+    @_wrapper = wrapper
+    @_wrapper.style.cssText = "
+      height: #{@options.size[1] * 1.5 * @options.maxHeight}px;
+      line-height: #{@options.size[1] * 1.5 * @options.maxHeight}px;
     "
 
   animation = ->
@@ -95,34 +100,33 @@ class Sounder
     do anime = =>
       @_timerID = _requestAnimeFrame anime
       last = new Date().getTime()
-      if last - start >= 100 - @option.speed
+      if last - start >= 100 - @options.speed
         barsAdjust.call @
         start = new Date().getTime()
 
-  styling = (target) ->
-    # IE8 で style.cssText による参照再代入ができない
-    if _isArray @option.color
-      len = @option.color.length - 1
-      backgroundColor = @option.color[_getRandomInt(0, len)]
+  stylingPiece = (target) ->
+    # IE8でstyle.cssTextによる参照再代入ができないから最初にbackgroundColor定義
+    if _isArray @options.color
+      len = @options.color.length - 1
+      backgroundColor = @options.color[_getRandomInt(0, len)]
     else
-      backgroundColor = @option.color
+      backgroundColor = @options.color
 
     # marginは修正するかも
     target.style.cssText = "
-      width: #{@option.size[0]}px;
-      height: #{@option.size[1]}px;
-      margin: 0 1px #{Math.floor(@option.size[1] / 2)}px;
+      width: #{@options.size[0]}px;
+      height: #{@options.size[1]}px;
+      margin: 0 1px #{Math.floor(@options.size[1] / 2)}px;
       background: #{backgroundColor};
     "
 
-  render = (output) -> output.appendChild @wrapper
+  render = (el) -> el.appendChild @_wrapper
 
   addFragment = (target) ->
     div = document.createElement 'div'
     div.className = 'sounder-fragment'
 
-    # Styling piece
-    styling.call @, div
+    stylingPiece.call @, div
 
     target.insertBefore div, target.firstChild
 
@@ -136,19 +140,19 @@ class Sounder
     doAdjust[1] = rmFragment
 
     return ->
-      for bar in @bars
+      for bar in @_bars
         currentLength = _getChildNode(bar).length
         if currentLength is 1
           addFragment.call @, bar
-        else if currentLength is @option.maxHeight
+        else if currentLength is @options.maxHeight
           rmFragment.call @, bar
         else
           doAdjust[_getRandomInt(0, 1)].call @, bar
 
 
 
-  constructor: (option) ->
-    @option = _extend {}, defaults, option
+  constructor: (options) ->
+    @options = _extend {}, defaults, options
 
 
 
@@ -158,7 +162,7 @@ class Sounder
 
     render.call @, output
 
-    if @option.autoPlay is true
+    if @options.autoPlay is true
       animation.call @
     return this
 
@@ -189,9 +193,15 @@ class Sounder
     return this
 
   reset: ->
-    for bar in @bars
+    for bar in @_bars
       while bar.childNodes[1]
         bar.removeChild bar.firstChild
     return this
+
+  destroy: (callback) ->
+    _cancelAnimeFrame @_timerID
+    if @_timerID? then @_timerID = null
+    _remove @_wrapper
+    callback?()
 
 window.Sounder or= Sounder

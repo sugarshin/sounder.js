@@ -119,6 +119,10 @@ Effect counter reset.
 
 **Returns:** `this`
 
+### `.destory()`
+
+Destory.
+
 ## Contributing
 
 This library was developed with following things
