@@ -207,9 +207,10 @@ do (global = (this or 0).self or global) ->
 
 
 
-  # isBrowser = 'document' of global
-  # isWebWorkers = 'WorkerLocation' of global
-  # isNode = 'process' of global
+  isBrowser = 'document' of global
+  isWebWorkers = 'WorkerLocation' of global
+  isNode = 'process' of global
 
-  module.exports = Sounder
+  module.exports = Sounder if isNode
+
   global['Sounder'] or= Sounder

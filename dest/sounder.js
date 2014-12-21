@@ -1,5 +1,5 @@
 /*!
- * @license sounder.js v0.12.0
+ * @license sounder.js v0.12.1
  * (c) 2014 sugarshin https://github.com/sugarshin
  * License: MIT
  */
@@ -7,7 +7,7 @@ var __slice = [].slice;
 
 (function(global) {
   "use strict";
-  var Sounder;
+  var Sounder, isBrowser, isNode, isWebWorkers;
   Sounder = (function() {
     var addFragment, animation, barsAdjust, init, render, rmFragment, stylingPiece, _cancelAnimeFrame, _extend, _getChildNode, _getRandomInt, _isArray, _remove, _requestAnimeFrame;
 
@@ -254,6 +254,11 @@ var __slice = [].slice;
     return Sounder;
 
   })();
-  module.exports = Sounder;
+  isBrowser = 'document' in global;
+  isWebWorkers = 'WorkerLocation' in global;
+  isNode = 'process' in global;
+  if (isNode) {
+    module.exports = Sounder;
+  }
   return global['Sounder'] || (global['Sounder'] = Sounder);
 })((this || 0).self || global);
