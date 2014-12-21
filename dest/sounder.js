@@ -1,14 +1,15 @@
 /*!
- * @license sounder.js v0.11.0
+ * @license sounder.js v0.12.0
  * (c) 2014 sugarshin https://github.com/sugarshin
  * License: MIT
  */
-(function() {
-  var Sounder,
-    __slice = [].slice;
+var __slice = [].slice;
 
+(function(global) {
+  "use strict";
+  var Sounder;
   Sounder = (function() {
-    var addFragment, animation, barsAdjust, defaults, init, render, rmFragment, stylingPiece, _cancelAnimeFrame, _extend, _getChildNode, _getRandomInt, _isArray, _remove, _requestAnimeFrame;
+    var addFragment, animation, barsAdjust, init, render, rmFragment, stylingPiece, _cancelAnimeFrame, _extend, _getChildNode, _getRandomInt, _isArray, _remove, _requestAnimeFrame;
 
     _extend = function(out) {
       var i, key, val, _i, _ref, _ref1;
@@ -69,15 +70,6 @@
 
     _remove = function(el) {
       return el.parentNode.removeChild(el);
-    };
-
-    defaults = {
-      size: [20, 4],
-      color: '#e74c3c',
-      column: 6,
-      maxHeight: 10,
-      autoPlay: false,
-      speed: 60
     };
 
     init = function() {
@@ -176,8 +168,17 @@
     })();
 
     function Sounder(options) {
-      this.options = _extend({}, defaults, options);
+      this.options = _extend({}, this.defaults, options);
     }
+
+    Sounder.prototype.defaults = {
+      size: [20, 4],
+      color: '#e74c3c',
+      column: 6,
+      maxHeight: 10,
+      autoPlay: false,
+      speed: 60
+    };
 
     Sounder.prototype.create = function(output) {
       init.call(this);
@@ -253,7 +254,6 @@
     return Sounder;
 
   })();
-
-  window.Sounder || (window.Sounder = Sounder);
-
-}).call(this);
+  module.exports = Sounder;
+  return global['Sounder'] || (global['Sounder'] = Sounder);
+})((this || 0).self || global);

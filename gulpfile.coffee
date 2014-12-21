@@ -19,25 +19,28 @@ banner = """
 
 """
 
+fileName = 'sounder'
+
 gulp.task 'coffee', ->
-  gulp.src 'src/sounder.coffee'
+  gulp.src "src/#{fileName}.coffee"
     .pipe plumber(
       errorHandler: notify.onError '<%= error.message %>'
     )
     .pipe coffeelint()
-    .pipe coffee()
+    .pipe coffee(
+      bare: true
+    )
     .pipe header(banner)
     .pipe gulp.dest('dest/')
 
 gulp.task 'serve', ->
-  browserSync(
+  browserSync
     server:
       baseDir: './'
       index: 'demo/index.html'
-  )
 
 gulp.task 'default', ['serve'], ->
-  gulp.watch ['src/sounder.coffee'], ['coffee', browserSync.reload]
+  gulp.watch ["src/#{fileName}.coffee"], ['coffee', browserSync.reload]
 
 gulp.task 'major', ->
   gulp.src './*.json'
@@ -61,7 +64,7 @@ gulp.task 'patch', ->
     .pipe gulp.dest('./')
 
 gulp.task 'build', ['coffee'], ->
-  gulp.src 'dest/sounder.js'
+  gulp.src "dest/#{fileName}.js"
     .pipe uglify(
       preserveComments: 'some'
     )
