@@ -1,3 +1,68 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var Sounder, output, pause, play, sounder, stop, toggle, _addEvent;
+
+Sounder = require('../dest/sounder');
+
+_addEvent = function(el, type, func) {
+  if (el.addEventListener) {
+    el.addEventListener(type, func, false);
+  } else {
+    if (el.attachEvent) {
+      el.attachEvent("on" + type, func);
+    }
+  }
+};
+
+sounder = new Sounder({
+  size: [16, 4],
+  color: '#23AAA4',
+  column: 11,
+  maxHeight: 10,
+  autoPlay: true
+});
+
+output = document.getElementById('output');
+
+sounder.create(output);
+
+play = document.getElementById('play');
+
+pause = document.getElementById('pause');
+
+stop = document.getElementById('stop');
+
+toggle = document.getElementById('toggle');
+
+_addEvent(play, 'click', function() {
+  return sounder.play(function() {
+    return console.log('Played!!');
+  });
+});
+
+_addEvent(pause, 'click', function() {
+  return sounder.pause(function() {
+    return console.log('Paused!!');
+  });
+});
+
+_addEvent(toggle, 'click', function() {
+  return sounder.toggle(function() {
+    return console.log('Toggle for play!!');
+  }, function() {
+    return console.log('Toggle for pause!!');
+  });
+});
+
+_addEvent(stop, 'click', function() {
+  return sounder.stop(function() {
+    return console.log('Stopped!!');
+  });
+});
+
+
+
+},{"../dest/sounder":2}],2:[function(require,module,exports){
+(function (global){
 /*!
  * @license sounder.js v0.13.0
  * (c) 2014 sugarshin https://github.com/sugarshin
@@ -269,3 +334,6 @@
   })((this || 0).self || global);
 
 }).call(this);
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}]},{},[1]);

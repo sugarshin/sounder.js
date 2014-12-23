@@ -2,6 +2,8 @@ gulp = require 'gulp'
 plumber = require 'gulp-plumber'
 coffee = require 'gulp-coffee'
 coffeelint = require 'gulp-coffeelint'
+browserify = require 'browserify'
+source = require 'vinyl-source-stream'
 notify = require 'gulp-notify'
 header = require 'gulp-header'
 uglify = require 'gulp-uglify'
@@ -28,10 +30,18 @@ gulp.task 'coffee', ->
     )
     .pipe coffeelint()
     .pipe coffee(
-      bare: true
+      # bare: true
     )
     .pipe header(banner)
     .pipe gulp.dest('dest/')
+
+gulp.task 'browserify', ['coffee'], ->
+  browserify
+    entries: ['./demo/demo.coffee']
+    extensions: ['.coffee', '.js']
+  .bundle()
+  .pipe source 'demo.js'
+  .pipe gulp.dest('demo/')
 
 gulp.task 'serve', ->
   browserSync
@@ -40,7 +50,7 @@ gulp.task 'serve', ->
       index: 'demo/index.html'
 
 gulp.task 'default', ['serve'], ->
-  gulp.watch ["src/#{fileName}.coffee"], ['coffee', browserSync.reload]
+  gulp.watch ["src/#{fileName}.coffee"], ['browserify', browserSync.reload]
 
 gulp.task 'major', ->
   gulp.src './*.json'
@@ -63,7 +73,7 @@ gulp.task 'patch', ->
     )
     .pipe gulp.dest('./')
 
-gulp.task 'build', ['coffee'], ->
+gulp.task 'build', ['browserify'], ->
   gulp.src "dest/#{fileName}.js"
     .pipe uglify(
       preserveComments: 'some'

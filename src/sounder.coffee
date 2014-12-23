@@ -211,6 +211,6 @@ do (global = (this or 0).self or global) ->
   isWebWorkers = 'WorkerLocation' of global
   isNode = 'process' of global
 
-  module.exports = Sounder if isNode
+  module?['exports'] = Sounder if isNode or isBrowser
 
-  global['Sounder'] or= Sounder
+  global['Sounder'] or= Sounder if isBrowser
