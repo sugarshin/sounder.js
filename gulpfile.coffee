@@ -10,6 +10,7 @@ uglify = require 'gulp-uglify'
 rename = require 'gulp-rename'
 bump = require 'gulp-bump'
 browserSync = require 'browser-sync'
+exec = require('child_process').exec
 pkg = require './package.json'
 
 banner = """
@@ -45,9 +46,12 @@ gulp.task 'browserify', ['coffee'], ->
 
 gulp.task 'serve', ->
   browserSync
+    startPath: '/'
     server:
       baseDir: './'
-      index: 'demo/index.html'
+      index: './demo/'
+      routes:
+        '/': 'demo/'
 
 gulp.task 'default', ['serve'], ->
   gulp.watch ["src/#{fileName}.coffee"], ['browserify', browserSync.reload]
@@ -82,3 +86,9 @@ gulp.task 'build', ['browserify'], ->
       extname: '.min.js'
     )
     .pipe gulp.dest('dest/')
+
+gulp.task 'gh-pages', (cb) ->
+  exec 'git subtree push --prefix demo/ origin gh-pages', (err, stdout, stderr) ->
+    console.log stdout
+    console.log stderr
+    cb err
