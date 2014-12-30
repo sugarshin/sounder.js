@@ -19,12 +19,14 @@ Sound effector small JavaScript library.
 ## Quickstart
 
 ```shell
-bower install sounder.js
+bower i sounder.js
 ```
 
 ## Usage
 
 ```javascript
+var Sounder = require('sounder');
+
 var sounder = new Sounder(),
     output = document.getElementById('output');
 
