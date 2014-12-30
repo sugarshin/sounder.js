@@ -4,33 +4,33 @@
  * License: MIT
  */
 (function() {
-  var __slice = [].slice;
+  var __hasProp = {}.hasOwnProperty,
+    __slice = [].slice;
 
   (function(global) {
     "use strict";
-    var Sounder, isBrowser, isNode, isWebWorkers;
-    Sounder = (function() {
-      var addFragment, animation, barsAdjust, init, render, rmFragment, stylingPiece, _cancelAnimeFrame, _extend, _getChildNode, _getRandomInt, _isArray, _remove, _requestAnimeFrame;
+    var Sounder, Utility, isBrowser, isNode;
+    Utility = (function() {
+      function Utility() {}
 
-      _extend = function(out) {
+      Utility.prototype.extend = function(out) {
         var i, key, val, _i, _ref, _ref1;
-        out = out || {};
+        out || (out = {});
         for (i = _i = 1, _ref = arguments.length; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
           if (!arguments[i]) {
             continue;
           }
           _ref1 = arguments[i];
           for (key in _ref1) {
+            if (!__hasProp.call(_ref1, key)) continue;
             val = _ref1[key];
-            if (arguments[i].hasOwnProperty(key)) {
-              out[key] = val;
-            }
+            out[key] = val;
           }
         }
         return out;
       };
 
-      _getChildNode = function(el) {
+      Utility.prototype.getChildNode = function(el) {
         var child, children, _i, _len, _ref;
         children = [];
         _ref = el.children;
@@ -43,7 +43,7 @@
         return children;
       };
 
-      _isArray = (function() {
+      Utility.prototype.isArray = (function() {
         if (Array.isArray) {
           return Array.isArray;
         } else {
@@ -53,27 +53,77 @@
         }
       })();
 
-      _getRandomInt = function(min, max) {
+      Utility.prototype.getRandomInt = function(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
       };
 
-      _requestAnimeFrame = (function() {
-        return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || window.oRequestAnimationFrame || function(callback) {
-          return window.setTimeout(callback, 1000 / 60);
-        };
+      Utility.prototype.requestAnimeFrame = (function() {
+        if (requestAnimationFrame) {
+          return function(callback) {
+            return requestAnimationFrame(callback);
+          };
+        } else if (webkitRequestAnimationFrame) {
+          return function(callback) {
+            return webkitRequestAnimationFrame(callback);
+          };
+        } else if (mozRequestAnimationFrame) {
+          return function(callback) {
+            return mozRequestAnimationFrame(callback);
+          };
+        } else if (msRequestAnimationFrame) {
+          return function(callback) {
+            return msRequestAnimationFrame(callback);
+          };
+        } else if (oRequestAnimationFrame) {
+          return function(callback) {
+            return oRequestAnimationFrame(callback);
+          };
+        } else {
+          return function(callback) {
+            return setTimeout(callback, 1000 / 60);
+          };
+        }
       })();
 
-      _cancelAnimeFrame = (function() {
-        return window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame || window.msCancelAnimationFrame || window.oCancelAnimationFrame || function(id) {
-          return window.clearTimeout(id);
-        };
+      Utility.prototype.cancelAnimeFrame = (function() {
+        if (cancelAnimationFrame) {
+          return function(id) {
+            return cancelAnimationFrame(id);
+          };
+        } else if (webkitCancelAnimationFrame) {
+          return function(id) {
+            return webkitCancelAnimationFrame(id);
+          };
+        } else if (mozCancelAnimationFrame) {
+          return function(id) {
+            return mozCancelAnimationFrame(id);
+          };
+        } else if (msCancelAnimationFrame) {
+          return function(id) {
+            return msCancelAnimationFrame(id);
+          };
+        } else if (oCancelAnimationFrame) {
+          return function(id) {
+            return oCancelAnimationFrame(id);
+          };
+        } else {
+          return function(id) {
+            return clearTimeout(id);
+          };
+        }
       })();
 
-      _remove = function(el) {
+      Utility.prototype.remove = function(el) {
         return el.parentNode.removeChild(el);
       };
 
-      init = function() {
+      return Utility;
+
+    })();
+    Sounder = (function() {
+      Sounder.prototype.util = new Utility;
+
+      Sounder.prototype._init = function() {
         var bar, col, colFragment, i, piece, wrapper, _i, _j, _len, _ref, _ref1;
         wrapper = document.createElement('div');
         wrapper.className = 'sounder-wrapper';
@@ -83,12 +133,12 @@
           col.className = 'sounder-col';
           piece = document.createElement('div');
           piece.className = 'sounder-fragment';
-          stylingPiece.call(this, piece);
+          this._stylingPiece(piece);
           col.appendChild(piece);
           colFragment.appendChild(col);
         }
         wrapper.appendChild(colFragment);
-        this._bars = _getChildNode(wrapper);
+        this._bars = this.util.getChildNode(wrapper);
         _ref1 = this._bars;
         for (_j = 0, _len = _ref1.length; _j < _len; _j++) {
           bar = _ref1[_j];
@@ -98,78 +148,72 @@
         return this._wrapper.style.cssText = "height: " + (this.options.size[1] * 1.5 * this.options.maxHeight) + "px; line-height: " + (this.options.size[1] * 1.5 * this.options.maxHeight) + "px;";
       };
 
-      animation = function() {
+      Sounder.prototype._animation = function() {
         var anime, start;
         this._isPlaying = true;
         start = new Date().getTime();
         return (anime = (function(_this) {
           return function() {
             var last;
-            _this._timerID = _requestAnimeFrame(anime);
+            _this._timerID = _this.util.requestAnimeFrame.call(_this, anime);
             last = new Date().getTime();
             if (last - start >= 100 - _this.options.speed) {
-              barsAdjust.call(_this);
+              _this._barsAdjust();
               return start = new Date().getTime();
             }
           };
         })(this))();
       };
 
-      stylingPiece = function(target) {
+      Sounder.prototype._stylingPiece = function(target) {
         var backgroundColor, len;
-        if (_isArray(this.options.color)) {
+        if (this.util.isArray(this.options.color)) {
           len = this.options.color.length - 1;
-          backgroundColor = this.options.color[_getRandomInt(0, len)];
+          backgroundColor = this.options.color[this.util.getRandomInt(0, len)];
         } else {
           backgroundColor = this.options.color;
         }
         return target.style.cssText = "width: " + this.options.size[0] + "px; height: " + this.options.size[1] + "px; margin: 0 1px " + (Math.floor(this.options.size[1] / 2)) + "px; background: " + backgroundColor + ";";
       };
 
-      render = function(el) {
+      Sounder.prototype._render = function(el) {
         return el.appendChild(this._wrapper);
       };
 
-      addFragment = function(target) {
+      Sounder.prototype._addFragment = function(target) {
         var div;
         div = document.createElement('div');
         div.className = 'sounder-fragment';
-        stylingPiece.call(this, div);
+        this._stylingPiece(div);
         return target.insertBefore(div, target.firstChild);
       };
 
-      rmFragment = function(target) {
+      Sounder.prototype._rmFragment = function(target) {
         var child;
-        child = _getChildNode(target);
+        child = this.util.getChildNode(target);
         return child[0].parentNode.removeChild(child[0]);
       };
 
-      barsAdjust = (function() {
-        var doAdjust;
-        doAdjust = [];
-        doAdjust[0] = addFragment;
-        doAdjust[1] = rmFragment;
-        return function() {
-          var bar, currentLength, _i, _len, _ref, _results;
-          _ref = this._bars;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            bar = _ref[_i];
-            currentLength = _getChildNode(bar).length;
-            if (currentLength === 1) {
-              _results.push(addFragment.call(this, bar));
-            } else if (currentLength === this.options.maxHeight) {
-              _results.push(rmFragment.call(this, bar));
-            } else {
-              _results.push(doAdjust[_getRandomInt(0, 1)].call(this, bar));
-            }
+      Sounder.prototype._barsAdjust = function() {
+        var bar, currentLength, _i, _len, _ref, _results;
+        _ref = this._bars;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          bar = _ref[_i];
+          currentLength = this.util.getChildNode(bar).length;
+          if (currentLength === 1) {
+            _results.push(this._addFragment(bar));
+          } else if (currentLength === this.options.maxHeight) {
+            _results.push(this._rmFragment(bar));
+          } else {
+            _results.push([this._addFragment, this._rmFragment][this.util.getRandomInt(0, 1)].call(this, bar));
           }
-          return _results;
-        };
-      })();
+        }
+        return _results;
+      };
 
       function Sounder(options) {
-        this.options = _extend({}, this.defaults, options);
+        this.options = this.util.extend({}, this.defaults, options);
       }
 
       Sounder.prototype.defaults = {
@@ -182,17 +226,17 @@
       };
 
       Sounder.prototype.create = function(output) {
-        init.call(this);
-        render.call(this, output);
+        this._init();
+        this._render(output);
         if (this.options.autoPlay === true) {
-          animation.call(this);
+          this._animation();
         }
         return this;
       };
 
       Sounder.prototype.play = function(callback) {
         if (this._isPlaying !== true) {
-          animation.call(this);
+          this._animation();
           if (typeof callback === "function") {
             callback();
           }
@@ -202,7 +246,7 @@
 
       Sounder.prototype.pause = function(callback) {
         if (this._isPlaying === true) {
-          _cancelAnimeFrame(this._timerID);
+          this.util.cancelAnimeFrame(this._timerID);
           this._isPlaying = false;
           if (typeof callback === "function") {
             callback();
@@ -244,11 +288,11 @@
       };
 
       Sounder.prototype.destroy = function(callback) {
-        _cancelAnimeFrame(this._timerID);
+        this.util.cancelAnimeFrame(this._timerID);
         if (this._timerID != null) {
           this._timerID = null;
         }
-        _remove(this._wrapper);
+        this.util.remove(this._wrapper);
         return typeof callback === "function" ? callback() : void 0;
       };
 
@@ -256,14 +300,13 @@
 
     })();
     isBrowser = 'document' in global;
-    isWebWorkers = 'WorkerLocation' in global;
     isNode = 'process' in global;
     if (isNode || isBrowser) {
       if (typeof module !== "undefined" && module !== null) {
         module['exports'] = Sounder;
       }
     }
-    if (isBrowser) {
+    if (isBrowser && (typeof module === "undefined" || module === null)) {
       return global['Sounder'] || (global['Sounder'] = Sounder);
     }
   })((this || 0).self || global);

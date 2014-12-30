@@ -1,3 +1,8 @@
+###!
+ * @license sounder.js v0.13.0
+ * (c) 2014 sugarshin https://github.com/sugarshin
+ * License: MIT
+###
 do (global = (this or 0).self or global) ->
   "use strict"
 
