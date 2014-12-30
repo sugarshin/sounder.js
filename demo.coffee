@@ -1,4 +1,4 @@
-Sounder = require '../src/sounder.coffee'
+Sounder = require '../dest/sounder.coffee'
 
 _addEvent = (el, type, func) ->
   if el.addEventListener
