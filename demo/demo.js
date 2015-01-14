@@ -62,25 +62,24 @@ _addEvent(stop, 'click', function() {
 
 
 },{"../dest/sounder.coffee":2}],2:[function(require,module,exports){
-(function (global){
 
 /*!
- * @license sounder.js v0.13.0
- * (c) 2014 sugarshin https://github.com/sugarshin
+ * @license sounder.js v0.13.1
+ * (c) 2015 sugarshin https://github.com/sugarshin
  * License: MIT
  */
 var __hasProp = {}.hasOwnProperty,
   __slice = [].slice;
 
 (function(global) {
-  "use strict";
-  var Sounder, Utility, isBrowser, isNode;
-  Utility = (function() {
-    function Utility() {}
+  var Sounder;
+  Sounder = (function() {
+    "use strict";
+    var _cancelAnimeFrame, _extend, _getChildNode, _getRandomInt, _isArray, _remove, _requestAnimeFrame;
 
-    Utility.prototype.extend = function(out) {
+    _extend = function(out) {
       var i, key, val, _i, _ref, _ref1;
-      out || (out = {});
+      out = out || {};
       for (i = _i = 1, _ref = arguments.length; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
         if (!arguments[i]) {
           continue;
@@ -95,7 +94,7 @@ var __hasProp = {}.hasOwnProperty,
       return out;
     };
 
-    Utility.prototype.getChildNode = function(el) {
+    _getChildNode = function(el) {
       var child, children, _i, _len, _ref;
       children = [];
       _ref = el.children;
@@ -108,7 +107,7 @@ var __hasProp = {}.hasOwnProperty,
       return children;
     };
 
-    Utility.prototype.isArray = (function() {
+    _isArray = (function() {
       if (Array.isArray) {
         return Array.isArray;
       } else {
@@ -118,75 +117,25 @@ var __hasProp = {}.hasOwnProperty,
       }
     })();
 
-    Utility.prototype.getRandomInt = function(min, max) {
+    _getRandomInt = function(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
-    Utility.prototype.requestAnimeFrame = (function() {
-      if (requestAnimationFrame) {
-        return function(callback) {
-          return requestAnimationFrame(callback);
-        };
-      } else if (webkitRequestAnimationFrame) {
-        return function(callback) {
-          return webkitRequestAnimationFrame(callback);
-        };
-      } else if (mozRequestAnimationFrame) {
-        return function(callback) {
-          return mozRequestAnimationFrame(callback);
-        };
-      } else if (msRequestAnimationFrame) {
-        return function(callback) {
-          return msRequestAnimationFrame(callback);
-        };
-      } else if (oRequestAnimationFrame) {
-        return function(callback) {
-          return oRequestAnimationFrame(callback);
-        };
-      } else {
-        return function(callback) {
-          return setTimeout(callback, 1000 / 60);
-        };
-      }
+    _requestAnimeFrame = (function() {
+      return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || window.oRequestAnimationFrame || function(callback) {
+        return window.setTimeout(callback, 1000 / 60);
+      };
     })();
 
-    Utility.prototype.cancelAnimeFrame = (function() {
-      if (cancelAnimationFrame) {
-        return function(id) {
-          return cancelAnimationFrame(id);
-        };
-      } else if (webkitCancelAnimationFrame) {
-        return function(id) {
-          return webkitCancelAnimationFrame(id);
-        };
-      } else if (mozCancelAnimationFrame) {
-        return function(id) {
-          return mozCancelAnimationFrame(id);
-        };
-      } else if (msCancelAnimationFrame) {
-        return function(id) {
-          return msCancelAnimationFrame(id);
-        };
-      } else if (oCancelAnimationFrame) {
-        return function(id) {
-          return oCancelAnimationFrame(id);
-        };
-      } else {
-        return function(id) {
-          return clearTimeout(id);
-        };
-      }
+    _cancelAnimeFrame = (function() {
+      return window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame || window.msCancelAnimationFrame || window.oCancelAnimationFrame || function(id) {
+        return window.clearTimeout(id);
+      };
     })();
 
-    Utility.prototype.remove = function(el) {
+    _remove = function(el) {
       return el.parentNode.removeChild(el);
     };
-
-    return Utility;
-
-  })();
-  Sounder = (function() {
-    Sounder.prototype.util = new Utility;
 
     Sounder.prototype._init = function() {
       var bar, col, colFragment, i, piece, wrapper, _i, _j, _len, _ref, _ref1;
@@ -203,7 +152,7 @@ var __hasProp = {}.hasOwnProperty,
         colFragment.appendChild(col);
       }
       wrapper.appendChild(colFragment);
-      this._bars = this.util.getChildNode(wrapper);
+      this._bars = _getChildNode(wrapper);
       _ref1 = this._bars;
       for (_j = 0, _len = _ref1.length; _j < _len; _j++) {
         bar = _ref1[_j];
@@ -220,7 +169,7 @@ var __hasProp = {}.hasOwnProperty,
       return (anime = (function(_this) {
         return function() {
           var last;
-          _this._timerID = _this.util.requestAnimeFrame.call(_this, anime);
+          _this._timerID = _requestAnimeFrame(anime);
           last = new Date().getTime();
           if (last - start >= 100 - _this.options.speed) {
             _this._barsAdjust();
@@ -232,9 +181,9 @@ var __hasProp = {}.hasOwnProperty,
 
     Sounder.prototype._stylingPiece = function(target) {
       var backgroundColor, len;
-      if (this.util.isArray(this.options.color)) {
+      if (_isArray(this.options.color)) {
         len = this.options.color.length - 1;
-        backgroundColor = this.options.color[this.util.getRandomInt(0, len)];
+        backgroundColor = this.options.color[_getRandomInt(0, len)];
       } else {
         backgroundColor = this.options.color;
       }
@@ -255,7 +204,7 @@ var __hasProp = {}.hasOwnProperty,
 
     Sounder.prototype._rmFragment = function(target) {
       var child;
-      child = this.util.getChildNode(target);
+      child = _getChildNode(target);
       return child[0].parentNode.removeChild(child[0]);
     };
 
@@ -265,23 +214,23 @@ var __hasProp = {}.hasOwnProperty,
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         bar = _ref[_i];
-        currentLength = this.util.getChildNode(bar).length;
+        currentLength = _getChildNode(bar).length;
         if (currentLength === 1) {
           _results.push(this._addFragment(bar));
         } else if (currentLength === this.options.maxHeight) {
           _results.push(this._rmFragment(bar));
         } else {
-          _results.push([this._addFragment, this._rmFragment][this.util.getRandomInt(0, 1)].call(this, bar));
+          _results.push([this._addFragment, this._rmFragment][_getRandomInt(0, 1)].call(this, bar));
         }
       }
       return _results;
     };
 
     function Sounder(options) {
-      this.options = this.util.extend({}, this.defaults, options);
+      this.options = _extend({}, this._defaults, options);
     }
 
-    Sounder.prototype.defaults = {
+    Sounder.prototype._defaults = {
       size: [20, 4],
       color: '#e74c3c',
       column: 6,
@@ -311,7 +260,7 @@ var __hasProp = {}.hasOwnProperty,
 
     Sounder.prototype.pause = function(callback) {
       if (this._isPlaying === true) {
-        this.util.cancelAnimeFrame(this._timerID);
+        _cancelAnimeFrame(this._timerID);
         this._isPlaying = false;
         if (typeof callback === "function") {
           callback();
@@ -353,30 +302,28 @@ var __hasProp = {}.hasOwnProperty,
     };
 
     Sounder.prototype.destroy = function(callback) {
-      this.util.cancelAnimeFrame(this._timerID);
+      _cancelAnimeFrame(this._timerID);
       if (this._timerID != null) {
         this._timerID = null;
       }
-      this.util.remove(this._wrapper);
+      _remove(this._wrapper);
       return typeof callback === "function" ? callback() : void 0;
     };
 
     return Sounder;
 
   })();
-  isBrowser = 'document' in global;
-  isNode = 'process' in global;
-  if (isNode || isBrowser) {
-    if (typeof module !== "undefined" && module !== null) {
-      module['exports'] = Sounder;
-    }
+  if (typeof define === 'function' && define.amd) {
+    return define(function() {
+      return Sounder;
+    });
+  } else if (typeof module !== 'undefined' && module.exports) {
+    return module.exports = Sounder;
+  } else {
+    return global.Sounder || (global.Sounder = Sounder);
   }
-  if (isBrowser && (typeof module === "undefined" || module === null)) {
-    return global['Sounder'] || (global['Sounder'] = Sounder);
-  }
-})((this || 0).self || global);
+})(typeof window !== 'undefined' ? window : this);
 
 
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[1]);

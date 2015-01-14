@@ -24,7 +24,15 @@ bower i sounder.js
 
 ## Usage
 
+```html
+<script src="sounder.js"></script>
+```
+
+Or use it as an AMD, CommonJS module
+
 ```javascript
+// CommonJS
+
 var Sounder = require('sounder');
 
 var sounder = new Sounder(),
@@ -139,41 +147,13 @@ Destory.
 
 This library was developed with following things
 
-[gulp](http://gulpjs.com/)
+[gulp](//gulpjs.com/)
 
-[CoffeeScript](http://coffeescript.org/)
+[CoffeeScript](//coffeescript.org/)
 
 ```shell
 npm i
 ```
-
-### `gulp`
-
-Default gulp task
-
-CoffeeScript compile, Live reloading
-
-### `gulp patch`
-
-Patch
-
-`package.json`, `bower.json` version property update.
-
-### `gulp minor`
-
-Minor update
-
-`package.json`, `bower.json` version property update.
-
-### `gulp major`
-
-Major update
-
-`package.json`, `bower.json` version property update.
-
-### `gulp build`
-
-Build
 
 ## Support browser
 

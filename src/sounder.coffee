@@ -1,80 +1,61 @@
-do (global = (this or 0).self or global) ->
-  "use strict"
+do (global = if typeof window isnt 'undefined' then window else this) ->
 
-  class Utility
-    extend: (out) ->
-      out or= {}
+  class Sounder
+    "use strict"
+
+    # Utility ----------------------------------------------
+    _extend = (out) ->
+      out = out or {}
       for i in [1...arguments.length]
         unless arguments[i] then continue
         for own key, val of arguments[i]
           out[key] = val
       return out
 
-    getChildNode: (el) ->
+    _getChildNode = (el) ->
       children = []
       for child in el.children
         children.push child if child.nodeType != 8
       return children
 
-    isArray: do ->
+    _isArray = do ->
       if Array.isArray
         Array.isArray
       else
         (vArg) ->
           return Object.prototype.toString.call(vArg) is '[object Array]'
 
-    getRandomInt: (min, max) ->
+    _getRandomInt = (min, max) ->
       Math.floor(Math.random() * (max - min + 1)) + min
 
-    requestAnimeFrame: do ->
-      if requestAnimationFrame
+    _requestAnimeFrame = do ->
+      return (
+        window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
         (callback) ->
-          requestAnimationFrame callback
-      else if webkitRequestAnimationFrame
-        (callback) ->
-          webkitRequestAnimationFrame callback
-      else if mozRequestAnimationFrame
-        (callback) ->
-          mozRequestAnimationFrame callback
-      else if msRequestAnimationFrame
-        (callback) ->
-          msRequestAnimationFrame callback
-      else if oRequestAnimationFrame
-        (callback) ->
-          oRequestAnimationFrame callback
-      else
-        (callback) ->
-          setTimeout callback, 1000 / 60
+          return window.setTimeout callback, 1000 / 60
+      )
 
-    cancelAnimeFrame: do ->
-      if cancelAnimationFrame
+    _cancelAnimeFrame = do ->
+      return (
+        window.cancelAnimationFrame ||
+        window.webkitCancelAnimationFrame ||
+        window.mozCancelAnimationFrame ||
+        window.msCancelAnimationFrame ||
+        window.oCancelAnimationFrame ||
         (id) ->
-          cancelAnimationFrame id
-      else if webkitCancelAnimationFrame
-        (id) ->
-          webkitCancelAnimationFrame id
-      else if mozCancelAnimationFrame
-        (id) ->
-          mozCancelAnimationFrame id
-      else if msCancelAnimationFrame
-        (id) ->
-          msCancelAnimationFrame id
-      else if oCancelAnimationFrame
-        (id) ->
-          oCancelAnimationFrame id
-      else
-        (id) ->
-          clearTimeout id
+          return window.clearTimeout id
+      )
 
-    remove: (el) -> el.parentNode.removeChild el
+    _remove = (el) -> el.parentNode.removeChild el
+    # Utility ----------------------------------------------
 
 
 
-  class Sounder
-
-    util: new Utility
-
-    # Private method -----------------------------------------
+    # Private method ---------------------------------------
     _init: ->
       wrapper = document.createElement 'div'
       wrapper.className = 'sounder-wrapper'
@@ -93,7 +74,7 @@ do (global = (this or 0).self or global) ->
 
       wrapper.appendChild colFragment
 
-      @_bars = @util.getChildNode wrapper
+      @_bars = _getChildNode wrapper
       for bar in @_bars
         bar.style.cssText = "
           display: inline-block;
@@ -110,7 +91,7 @@ do (global = (this or 0).self or global) ->
       @_isPlaying = true
       start = new Date().getTime()
       do anime = =>
-        @_timerID = @util.requestAnimeFrame.call @, anime
+        @_timerID = _requestAnimeFrame anime
         last = new Date().getTime()
         if last - start >= 100 - @options.speed
           @_barsAdjust()
@@ -118,9 +99,9 @@ do (global = (this or 0).self or global) ->
 
     _stylingPiece: (target) ->
       # IE8でstyle.cssTextによる参照再代入ができないから最初にbackgroundColor定義
-      if @util.isArray @options.color
+      if _isArray @options.color
         len = @options.color.length - 1
-        backgroundColor = @options.color[@util.getRandomInt(0, len)]
+        backgroundColor = @options.color[_getRandomInt(0, len)]
       else
         backgroundColor = @options.color
 
@@ -143,25 +124,25 @@ do (global = (this or 0).self or global) ->
       target.insertBefore div, target.firstChild
 
     _rmFragment: (target) ->
-      child = @util.getChildNode target
+      child = _getChildNode target
       child[0].parentNode.removeChild child[0]
 
     _barsAdjust: ->
       for bar in @_bars
-        currentLength = @util.getChildNode(bar).length
+        currentLength = _getChildNode(bar).length
         if currentLength is 1
           @_addFragment bar
         else if currentLength is @options.maxHeight
           @_rmFragment bar
         else
-          [@_addFragment, @_rmFragment][@util.getRandomInt(0, 1)].call @, bar
+          [@_addFragment, @_rmFragment][_getRandomInt(0, 1)].call @, bar
 
 
 
     constructor: (options) ->
-      @options = @util.extend {}, @defaults, options
+      @options = _extend {}, @_defaults, options
 
-    defaults:
+    _defaults:
       size: [20, 4]
       color: '#e74c3c'
       column: 6
@@ -186,7 +167,7 @@ do (global = (this or 0).self or global) ->
 
     pause: (callback) ->
       if @_isPlaying is true
-        @util.cancelAnimeFrame @_timerID
+        _cancelAnimeFrame @_timerID
         @_isPlaying = false
         callback?()
       return this
@@ -211,18 +192,17 @@ do (global = (this or 0).self or global) ->
       return this
 
     destroy: (callback) ->
-      @util.cancelAnimeFrame @_timerID
+      _cancelAnimeFrame @_timerID
       if @_timerID? then @_timerID = null
-      @util.remove @_wrapper
+      _remove @_wrapper
       callback?()
 
 
 
-  isBrowser = 'document' of global
-
-  # Reservation
-  # isWebWorkers = 'WorkerLocation' of global
-  isNode = 'process' of global
-
-  module?['exports'] = Sounder if isNode or isBrowser
-  global['Sounder'] or= Sounder if isBrowser and not module?
+  # UMD
+  if typeof define is 'function' and define.amd
+    define -> Sounder
+  else if typeof module isnt 'undefined' and module.exports
+    module.exports = Sounder
+  else
+    global.Sounder or= Sounder
